@@ -37,7 +37,8 @@ export default function AuthPage() {
       }
       router.push("/account");
     } catch (error) {
-      console.error("Auth error:", error);
+      // Обрабатываем ошибку авторизации
+      console.error("Auth error:", error instanceof Error ? error.message : String(error));
     } finally {
       setIsSubmitting(false);
     }
