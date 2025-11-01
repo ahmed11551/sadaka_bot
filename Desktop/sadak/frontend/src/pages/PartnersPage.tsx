@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
 import { fundsService, Fund } from '../services/fundsService'
 import Icon from '../components/Icon'
+import { useToast } from '../hooks/useToast'
+import LoadingSpinner from '../components/LoadingSpinner'
 import '../App.css'
 
 const PartnersPage = () => {
   const [funds, setFunds] = useState<Fund[]>([])
   const [loading, setLoading] = useState(true)
+  const { error } = useToast()
 
   useEffect(() => {
     loadFunds()
@@ -15,15 +18,20 @@ const PartnersPage = () => {
     try {
       const data = await fundsService.getFunds()
       setFunds(data)
-    } catch (error) {
-      console.error('Error loading funds:', error)
+    } catch (err: any) {
+      console.error('Error loading funds:', err)
+      error(err.message || 'Ошибка при загрузке фондов')
     } finally {
       setLoading(false)
     }
   }
 
   if (loading) {
-    return <div className="page-container">Загрузка...</div>
+    return (
+      <div className="page-container">
+        <LoadingSpinner />
+      </div>
+    )
   }
 
   return (

@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react'
 import { historyService, HistoryItem } from '../services/historyService'
+import { useToast } from '../hooks/useToast'
+import LoadingSpinner from '../components/LoadingSpinner'
 import '../App.css'
 
 const HistoryPage = () => {
   const [history, setHistory] = useState<HistoryItem[]>([])
   const [loading, setLoading] = useState(true)
+  const { error } = useToast()
 
   useEffect(() => {
     loadHistory()
@@ -14,15 +17,20 @@ const HistoryPage = () => {
     try {
       const data = await historyService.getHistory()
       setHistory(data)
-    } catch (error) {
-      console.error('Error loading history:', error)
+    } catch (err: any) {
+      console.error('Error loading history:', err)
+      error(err.message || 'Ошибка при загрузке истории')
     } finally {
       setLoading(false)
     }
   }
 
   if (loading) {
-    return <div className="page-container">Загрузка...</div>
+    return (
+      <div className="page-container">
+        <LoadingSpinner />
+      </div>
+    )
   }
 
   return (

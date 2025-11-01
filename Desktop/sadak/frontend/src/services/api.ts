@@ -44,5 +44,52 @@ apiClient.interceptors.request.use((config) => {
   return config
 })
 
+// Централизованная обработка ошибок API
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Обработка ошибок сети
+    if (!error.response) {
+      error.message = 'Ошибка сети. Проверьте подключение к интернету.'
+      return Promise.reject(error)
+    }
+
+    // Обработка различных статус-кодов
+    const status = error.response?.status
+    const data = error.response?.data
+
+    switch (status) {
+      case 401:
+        error.message = 'Необходима авторизация'
+        // Можно добавить перенаправление на страницу логина для веб-версии
+        if (!isTelegramWebApp()) {
+          localStorage.removeItem('auth_token')
+        }
+        break
+      case 403:
+        error.message = data?.detail || 'Доступ запрещен'
+        break
+      case 404:
+        error.message = data?.detail || 'Ресурс не найден'
+        break
+      case 422:
+        error.message = data?.detail || 'Ошибка валидации данных'
+        break
+      case 500:
+        error.message = 'Ошибка сервера. Попробуйте позже.'
+        break
+      case 502:
+      case 503:
+      case 504:
+        error.message = 'Сервис временно недоступен. Попробуйте позже.'
+        break
+      default:
+        error.message = data?.detail || error.message || 'Произошла ошибка'
+    }
+
+    return Promise.reject(error)
+  }
+)
+
 export default apiClient
 

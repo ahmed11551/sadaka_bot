@@ -28,8 +28,13 @@ const CampaignDetailPage = () => {
     try {
       const data = await campaignsService.getCampaign(parseInt(id!))
       setCampaign(data)
-    } catch (error) {
-      console.error('Error loading campaign:', error)
+    } catch (err: any) {
+      console.error('Error loading campaign:', err)
+      error(err.message || 'Ошибка при загрузке кампании')
+      // Перенаправление на страницу кампаний через 2 секунды
+      setTimeout(() => {
+        navigate('/campaigns')
+      }, 2000)
     } finally {
       setLoading(false)
     }

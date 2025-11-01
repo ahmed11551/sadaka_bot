@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { useTelegramWebApp } from './hooks/useTelegramWebApp'
 import { useToast } from './hooks/useToast'
+import { setShareToastCallback } from './utils/share'
 import TabNavigation from './components/TabNavigation'
 import DonatePage from './pages/DonatePage'
 import SupportPage from './pages/SupportPage'
@@ -27,7 +28,7 @@ const isTelegramWebApp = () => {
 
 function App() {
   const { initTelegramWebApp } = useTelegramWebApp()
-  const { ToastContainer } = useToast()
+  const { ToastContainer, success } = useToast()
   const isTelegram = isTelegramWebApp()
 
   useEffect(() => {
@@ -43,7 +44,13 @@ function App() {
         console.log('Telegram WebApp not available, running in web mode')
       }
     }
-  }, [])
+    
+    // Настройка callback для Toast в утилитах шаринга
+    setShareToastCallback((message, type = 'success') => {
+      if (type === 'success') success(message)
+      // Для других типов можно добавить отдельные обработчики если нужно
+    })
+  }, [success])
 
   return (
     <Router>

@@ -2,6 +2,13 @@
  * Утилиты для шаринга в социальные сети
  */
 
+// Глобальный callback для Toast уведомлений
+let toastCallback: ((message: string, type?: 'success' | 'error' | 'info' | 'warning') => void) | null = null
+
+export const setShareToastCallback = (callback: (message: string, type?: 'success' | 'error' | 'info' | 'warning') => void) => {
+  toastCallback = callback
+}
+
 export const shareContent = {
   shareCampaign: (campaignId: number, title: string) => {
     const url = `${window.location.origin}/campaigns/${campaignId}`
@@ -18,7 +25,12 @@ export const shareContent = {
     } else {
       // Копируем в буфер обмена
       navigator.clipboard.writeText(`${text}\n${url}`)
-      alert('Ссылка скопирована в буфер обмена!')
+      if (toastCallback) {
+        toastCallback('Ссылка скопирована в буфер обмена!', 'success')
+      } else {
+        // Fallback если Toast не настроен
+        console.log('Ссылка скопирована в буфер обмена!')
+      }
     }
   },
   
@@ -34,7 +46,11 @@ export const shareContent = {
       }).catch(() => {})
     } else {
       navigator.clipboard.writeText(`${text}\n${url}`)
-      alert('Ссылка скопирована!')
+      if (toastCallback) {
+        toastCallback('Ссылка скопирована!', 'success')
+      } else {
+        console.log('Ссылка скопирована!')
+      }
     }
   },
   
