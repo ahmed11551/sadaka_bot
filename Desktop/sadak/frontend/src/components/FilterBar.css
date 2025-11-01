@@ -32,7 +32,11 @@
   transition: transform var(--transition-base);
 }
 
-.filter-toggle span.expanded {
+.filter-toggle .chevron-icon {
+  transition: transform 0.3s ease;
+}
+
+.filter-toggle .chevron-icon.expanded {
   transform: rotate(180deg);
 }
 

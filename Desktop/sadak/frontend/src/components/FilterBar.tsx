@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Icon from './Icon'
 import './FilterBar.css'
 
 interface FilterOption {
@@ -24,9 +25,9 @@ const FilterBar = ({ filters }: FilterBarProps) => {
         className="filter-toggle"
         onClick={() => setExpanded(!expanded)}
       >
-        <span>🔍</span>
+        <Icon name="filter" size={18} />
         Фильтры
-        <span className={expanded ? 'expanded' : ''}>▼</span>
+        <Icon name="chevronDown" size={16} className={expanded ? 'expanded chevron-icon' : 'chevron-icon'} />
       </button>
       
       {expanded && (

@@ -1,5 +1,6 @@
 import { Campaign } from '../services/campaignsService'
 import ShareButton from './ShareButton'
+import Icon from './Icon'
 import './CampaignCard.css'
 
 interface CampaignCardProps {
@@ -81,7 +82,10 @@ const CampaignCard = ({ campaign, onDonate }: CampaignCardProps) => {
             <div className="stat-label">Цель</div>
           </div>
           <div className="stat-item">
-            <div className="stat-value">👥 {campaign.participants_count}</div>
+            <div className="stat-value" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <Icon name="users" size={16} />
+              {campaign.participants_count}
+            </div>
             <div className="stat-label">Участников</div>
           </div>
         </div>
@@ -104,7 +108,7 @@ const CampaignCard = ({ campaign, onDonate }: CampaignCardProps) => {
             onClick={() => onDonate(campaign.id)}
             disabled={campaign.status !== 'active'}
           >
-            <span>💝</span>
+            <Icon name="heart" size={18} />
             Поддержать
           </button>
           <ShareButton

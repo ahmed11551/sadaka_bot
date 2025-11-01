@@ -5,6 +5,7 @@ import Skeleton from '../components/Skeleton'
 import CampaignCard from '../components/CampaignCard'
 import CreateCampaignModal from '../components/CreateCampaignModal'
 import FilterBar from '../components/FilterBar'
+import Icon from '../components/Icon'
 import { useDebounce } from '../hooks/useDebounce'
 import '../App.css'
 
@@ -91,7 +92,7 @@ const CampaignsPage = () => {
   return (
     <div className="page-container fade-in">
       <h1 className="page-title">
-        <span>🎯</span>
+        <Icon name="target" size={28} />
         Целевые кампании
       </h1>
       <p className="page-subtitle">
@@ -104,7 +105,7 @@ const CampaignsPage = () => {
           onClick={() => setShowCreateModal(true)}
           style={{ marginBottom: '16px' }}
         >
-          <span>➕</span>
+          <Icon name="plus" size={20} />
           Создать свою цель
         </button>
 
@@ -112,7 +113,7 @@ const CampaignsPage = () => {
         <input
           type="text"
           className="form-input"
-          placeholder="🔍 Поиск кампаний..."
+          placeholder="Поиск кампаний..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           style={{ marginBottom: '12px' }}
@@ -147,7 +148,9 @@ const CampaignsPage = () => {
 
       {filteredCampaigns.length === 0 && campaigns.length > 0 ? (
         <div className="card" style={{ textAlign: 'center', padding: '48px 24px' }}>
-          <div style={{ fontSize: '64px', marginBottom: '16px' }}>🔍</div>
+          <div style={{ marginBottom: '16px' }}>
+            <Icon name="search" size={64} color="var(--text-muted)" />
+          </div>
           <h3 style={{ marginBottom: '8px' }}>Кампании не найдены</h3>
           <p style={{ color: 'var(--text-muted)' }}>
             Попробуйте изменить фильтры поиска
@@ -155,7 +158,9 @@ const CampaignsPage = () => {
         </div>
       ) : campaigns.length === 0 ? (
         <div className="card" style={{ textAlign: 'center', padding: '48px 24px' }}>
-          <div style={{ fontSize: '64px', marginBottom: '16px' }}>🎯</div>
+          <div style={{ marginBottom: '16px' }}>
+            <Icon name="target" size={64} color="var(--text-muted)" />
+          </div>
           <h3 style={{ marginBottom: '8px' }}>Пока нет активных кампаний</h3>
           <p style={{ color: 'var(--text-muted)' }}>
             Станьте первым, кто создаст кампанию для сбора средств

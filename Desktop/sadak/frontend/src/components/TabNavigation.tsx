@@ -1,14 +1,15 @@
 import { NavLink } from 'react-router-dom'
+import Icon from './Icon'
 import './TabNavigation.css'
 
 const TabNavigation = () => {
   const tabs = [
-    { path: '/', label: 'Главная', icon: '🏠' },
-    { path: '/donate', label: 'Пожертвовать', icon: '💰' },
-    { path: '/support', label: 'Поддержать', icon: '💝' },
-    { path: '/campaigns', label: 'Кампании', icon: '🎯' },
-    { path: '/zakat', label: 'Закят', icon: '📿' },
-    { path: '/history', label: 'История', icon: '📜' },
+    { path: '/', label: 'Главная', icon: 'home' as const },
+    { path: '/donate', label: 'Пожертвовать', icon: 'coins' as const },
+    { path: '/support', label: 'Поддержать', icon: 'heart' as const },
+    { path: '/campaigns', label: 'Кампании', icon: 'target' as const },
+    { path: '/zakat', label: 'Закят', icon: 'handHeart' as const },
+    { path: '/history', label: 'История', icon: 'history' as const },
   ]
 
   return (
@@ -21,7 +22,9 @@ const TabNavigation = () => {
             `tab-item ${isActive ? 'active' : ''}`
           }
         >
-          <span className="tab-icon">{tab.icon}</span>
+          <span className="tab-icon">
+            <Icon name={tab.icon} size={22} />
+          </span>
           <span className="tab-label">{tab.label}</span>
         </NavLink>
       ))}

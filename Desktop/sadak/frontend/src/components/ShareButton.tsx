@@ -1,3 +1,4 @@
+import Icon from './Icon'
 import './ShareButton.css'
 
 interface ShareButtonProps {
@@ -29,7 +30,7 @@ const ShareButton = ({ url, title, text }: ShareButtonProps) => {
 
   return (
     <button className="share-button" onClick={handleShare}>
-      <span className="share-icon">📤</span>
+      <Icon name="share" size={18} className="share-icon" />
       <span>Поделиться</span>
     </button>
   )
