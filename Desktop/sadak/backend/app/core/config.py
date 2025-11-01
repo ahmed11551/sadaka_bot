@@ -24,6 +24,9 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
+    # Environment
+    ENVIRONMENT: str = "development"
+    
     # Rate limiting
     RATE_LIMIT_PER_MINUTE: int = 50
     

@@ -8,6 +8,9 @@ from app.services import donation_service
 from app.services.payment import payment_service
 from app.models.donation import DonationStatus
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -44,10 +47,11 @@ async def yookassa_webhook(
         
         return {"status": "ok"}
         
+    except HTTPException:
+        raise
     except Exception as e:
-        # Логирование ошибки
-        print(f"YooKassa webhook error: {e}")
-        raise HTTPException(status_code=400, detail=str(e))
+        logger.error(f"YooKassa webhook error: {e}", exc_info=True)
+        raise HTTPException(status_code=400, detail="Webhook processing error")
 
 
 @router.post("/cloudpayments")
@@ -80,7 +84,9 @@ async def cloudpayments_webhook(
         
         return {"status": "ok"}
         
+    except HTTPException:
+        raise
     except Exception as e:
-        print(f"CloudPayments webhook error: {e}")
-        raise HTTPException(status_code=400, detail=str(e))
+        logger.error(f"CloudPayments webhook error: {e}", exc_info=True)
+        raise HTTPException(status_code=400, detail="Webhook processing error")
 

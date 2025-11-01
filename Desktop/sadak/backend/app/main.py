@@ -5,17 +5,26 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.api.v1 import api_router
+import logging
+import os
+
+# Настройка логирования
+logging.basicConfig(
+    level=logging.INFO if settings.ENVIRONMENT == "production" else logging.DEBUG,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Садака-Пасс API",
     description="API для благотворительного Mini App в Telegram",
     version="1.0.0",
-    docs_url="/docs",
-    redoc_url="/redoc"
+    docs_url="/docs" if settings.ENVIRONMENT != "production" else None,
+    redoc_url="/redoc" if settings.ENVIRONMENT != "production" else None
 )
 
 # CORS middleware
-import os
 allowed_origins = [
     "http://localhost:3000",
     "http://localhost:5173",  # Vite default port
@@ -26,9 +35,20 @@ allowed_origins = [
 if os.getenv("FRONTEND_URL"):
     allowed_origins.append(os.getenv("FRONTEND_URL"))
 
+# Валидация критичных настроек для продакшена
+if settings.ENVIRONMENT == "production":
+    if settings.SECRET_KEY == "your-secret-key-change-in-production":
+        logger.warning("⚠️ SECRET_KEY не изменен! Используйте случайную строку в продакшене!")
+    
+    if not settings.DATABASE_URL or "localhost" in settings.DATABASE_URL:
+        logger.warning("⚠️ DATABASE_URL указывает на localhost! Проверьте настройки БД!")
+    
+    if not settings.TELEGRAM_SECRET_KEY:
+        logger.warning("⚠️ TELEGRAM_SECRET_KEY не настроен! Безопасность может быть снижена!")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins if os.getenv("ENVIRONMENT") == "production" else ["*"],
+    allow_origins=allowed_origins if settings.ENVIRONMENT == "production" else ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -36,6 +56,13 @@ app.add_middleware(
 
 # Подключение роутеров
 app.include_router(api_router, prefix="/api/v1")
+
+# Startup event
+@app.on_event("startup")
+async def startup_event():
+    logger.info(f"🚀 Садака-Пасс API запущен (Environment: {settings.ENVIRONMENT})")
+    if settings.ENVIRONMENT == "production":
+        logger.info("✅ Продакшен режим активен")
 
 
 @app.get("/")
@@ -49,5 +76,22 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    return {"status": "ok"}
+    """Health check endpoint для мониторинга"""
+    from app.core.database import engine
+    from sqlalchemy import text
+    
+    try:
+        # Проверка подключения к БД
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        db_status = "ok"
+    except Exception as e:
+        logger.error(f"Database health check failed: {e}")
+        db_status = "error"
+    
+    return {
+        "status": "ok" if db_status == "ok" else "degraded",
+        "database": db_status,
+        "environment": settings.ENVIRONMENT
+    }
 
