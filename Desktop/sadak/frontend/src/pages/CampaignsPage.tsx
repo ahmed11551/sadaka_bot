@@ -100,14 +100,14 @@ const CampaignsPage = () => {
       </p>
       
       <div style={{ marginBottom: '24px' }}>
-        <button 
-          className="btn btn-primary" 
-          onClick={() => setShowCreateModal(true)}
-          style={{ marginBottom: '16px' }}
-        >
-          <Icon name="plus" size={20} />
-          Создать свою цель
-        </button>
+            <button 
+              className="btn btn-primary" 
+              onClick={() => setShowCreateModal(true)}
+              style={{ marginBottom: '16px' }}
+            >
+              <Icon name="plus" size={20} />
+              <span className="btn-text-responsive">Создать цель</span>
+            </button>
 
         {/* Поиск и фильтры */}
         <input
@@ -167,21 +167,22 @@ const CampaignsPage = () => {
           </p>
         </div>
       ) : (
-        filteredCampaigns.map((campaign) => (
-          <div 
-            key={campaign.id} 
-            onClick={() => navigate(`/campaigns/${campaign.id}`)} 
-            style={{ cursor: 'pointer', marginBottom: '24px' }}
-          >
-            <CampaignCard
-              campaign={campaign}
-              onDonate={(id) => {
-                // Открываем детальную страницу вместо prompt
-                navigate(`/campaigns/${id}`)
-              }}
-            />
-          </div>
-        ))
+        <div className="campaigns-list">
+          {filteredCampaigns.map((campaign) => (
+            <div 
+              key={campaign.id} 
+              onClick={() => navigate(`/campaigns/${campaign.id}`)} 
+              style={{ cursor: 'pointer', marginBottom: '24px', textDecoration: 'none' }}
+            >
+              <CampaignCard
+                campaign={campaign}
+                onDonate={(id) => {
+                  navigate(`/campaigns/${id}`)
+                }}
+              />
+            </div>
+          ))}
+        </div>
       )}
 
       <CreateCampaignModal

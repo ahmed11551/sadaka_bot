@@ -73,6 +73,8 @@ export type IconName =
   | 'arrowRight'
   | 'info'
   | 'alert'
+  | 'alertCircle'
+  | 'alertTriangle'
   | 'check'
   | 'star'
   | 'award'

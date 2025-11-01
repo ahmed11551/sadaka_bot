@@ -73,10 +73,46 @@
   font-weight: 600;
   letter-spacing: 0.3px;
   transition: all 0.3s ease;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  text-align: center;
 }
 
 .tab-item.active .tab-label {
   font-weight: 700;
+}
+
+/* Адаптивность для маленьких экранов */
+@media (max-width: 375px) {
+  .tab-label {
+    font-size: 10px;
+  }
+  
+  .tab-icon {
+    margin-bottom: 2px;
+  }
+  
+  .tab-item {
+    padding: 6px 2px;
+    min-width: 55px;
+  }
+}
+
+@media (max-width: 320px) {
+  .tab-label {
+    font-size: 9px;
+  }
+  
+  .tab-item {
+    padding: 6px 1px;
+    min-width: 50px;
+  }
+  
+  .tab-icon {
+    margin-bottom: 1px;
+  }
 }
 
 /* Темная тема */

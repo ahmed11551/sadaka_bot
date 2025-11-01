@@ -1,22 +1,31 @@
-# Игнорировать backend директорию
+# Полностью игнорировать backend
 backend/
-*.py
-requirements.txt
-alembic.ini
-__pycache__/
-*.pyc
-.venv/
-venv/
-env/
+**/backend/**
+**/*.py
+**/requirements.txt
+**/alembic.ini
+**/__pycache__/
+**/*.pyc
+**/.venv/
+**/venv/
+**/env/
 
-# Игнорировать документацию и скрипты
+# Игнорировать все кроме frontend
+!frontend/
+!frontend/**
+
+# Игнорировать документацию
 docs/
 *.md
+!README.md
 *.ps1
 test_*.py
 
-# Игнорировать другие файлы
+# Игнорировать системные файлы
 .git/
 .gitignore
 node_modules/
-
+.vscode/
+.idea/
+*.log
+.DS_Store

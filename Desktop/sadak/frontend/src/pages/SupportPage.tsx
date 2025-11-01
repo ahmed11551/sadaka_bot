@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { donationsService } from '../services/donationsService'
 import LoadingSpinner from '../components/LoadingSpinner'
 import Icon from '../components/Icon'
+import { useToast } from '../hooks/useToast'
 import '../App.css'
 
 const SupportPage = () => {
   const [amount, setAmount] = useState<number>(0)
   const [customAmount, setCustomAmount] = useState<string>('')
   const [donating, setDonating] = useState(false)
+  const { success, error, warning } = useToast()
 
   const presetAmounts = [500, 1000, 2500, 5000]
 
@@ -26,7 +28,7 @@ const SupportPage = () => {
 
   const handleDonate = async () => {
     if (amount <= 0) {
-      alert('Укажите сумму')
+      warning('Укажите сумму')
       return
     }
 
@@ -39,11 +41,12 @@ const SupportPage = () => {
       })
 
       if (donation.payment_url) {
+        success('Переход на оплату...')
         window.open(donation.payment_url, '_blank')
       }
-    } catch (error) {
-      console.error('Error initiating donation:', error)
-      alert('Ошибка при создании пожертвования')
+    } catch (err: any) {
+      console.error('Error initiating donation:', err)
+      error(err.response?.data?.detail || 'Ошибка при создании пожертвования')
     } finally {
       setDonating(false)
     }

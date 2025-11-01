@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { campaignsService, CampaignCreate } from '../services/campaignsService'
 import LoadingSpinner from '../components/LoadingSpinner'
+import { useToast } from '../hooks/useToast'
 import Icon from './Icon'
 import './CreateCampaignModal.css'
 
@@ -23,6 +24,7 @@ const CreateCampaignModal = ({ isOpen, onClose, onSuccess }: CreateCampaignModal
   })
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const { success, error } = useToast()
 
   const categories = [
     'мечеть',
@@ -70,6 +72,7 @@ const CreateCampaignModal = ({ isOpen, onClose, onSuccess }: CreateCampaignModal
     setLoading(true)
     try {
       await campaignsService.createCampaign(formData)
+      success('Кампания успешно создана и отправлена на модерацию!')
       onSuccess()
       onClose()
       // Сброс формы
@@ -83,9 +86,9 @@ const CreateCampaignModal = ({ isOpen, onClose, onSuccess }: CreateCampaignModal
         banner_url: '',
         end_date: '',
       })
-    } catch (error) {
-      console.error('Error creating campaign:', error)
-      alert('Ошибка при создании кампании')
+    } catch (err: any) {
+      console.error('Error creating campaign:', err)
+      error(err.response?.data?.detail || 'Ошибка при создании кампании')
     } finally {
       setLoading(false)
     }

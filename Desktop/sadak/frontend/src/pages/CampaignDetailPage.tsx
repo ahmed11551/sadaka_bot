@@ -5,6 +5,7 @@ import LoadingSpinner from '../components/LoadingSpinner'
 import Skeleton from '../components/Skeleton'
 import ShareButton from '../components/ShareButton'
 import Icon from '../components/Icon'
+import { useToast } from '../hooks/useToast'
 import '../App.css'
 
 const CampaignDetailPage = () => {
@@ -15,6 +16,7 @@ const CampaignDetailPage = () => {
   const [donating, setDonating] = useState(false)
   const [donationAmount, setDonationAmount] = useState<string>('')
   const [showDonationForm, setShowDonationForm] = useState(false)
+  const { success, error, warning } = useToast()
 
   useEffect(() => {
     if (id) {
@@ -35,7 +37,7 @@ const CampaignDetailPage = () => {
 
   const handleDonate = async () => {
     if (!campaign || !donationAmount || parseFloat(donationAmount) <= 0) {
-      alert('Укажите сумму пожертвования')
+      warning('Укажите сумму пожертвования')
       return
     }
 
@@ -46,13 +48,14 @@ const CampaignDetailPage = () => {
         parseFloat(donationAmount)
       )
       if (donation.payment_url) {
+        success('Переход на оплату...')
         window.open(donation.payment_url, '_blank')
       }
       setShowDonationForm(false)
       setDonationAmount('')
-    } catch (error) {
-      console.error('Error donating:', error)
-      alert('Ошибка при создании пожертвования')
+    } catch (err: any) {
+      console.error('Error donating:', err)
+      error(err.response?.data?.detail || 'Ошибка при создании пожертвования')
     } finally {
       setDonating(false)
     }
@@ -180,7 +183,7 @@ const CampaignDetailPage = () => {
               style={{ flex: 1 }}
             >
               <Icon name="heart" size={18} />
-              Поддержать кампанию
+              <span className="btn-text-responsive">Поддержать кампанию</span>
             </button>
             <ShareButton
               url={window.location.href}

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { useTelegramWebApp } from './hooks/useTelegramWebApp'
+import { useToast } from './hooks/useToast'
 import TabNavigation from './components/TabNavigation'
 import DonatePage from './pages/DonatePage'
 import SupportPage from './pages/SupportPage'
@@ -26,6 +27,7 @@ const isTelegramWebApp = () => {
 
 function App() {
   const { initTelegramWebApp } = useTelegramWebApp()
+  const { ToastContainer } = useToast()
   const isTelegram = isTelegramWebApp()
 
   useEffect(() => {
@@ -58,6 +60,7 @@ function App() {
           <Route path="/history" element={<HistoryPage />} />
         </Routes>
         <TabNavigation />
+        <ToastContainer />
       </div>
     </Router>
   )

@@ -6,6 +6,7 @@ import Skeleton from '../components/Skeleton'
 import FilterBar from '../components/FilterBar'
 import Icon from '../components/Icon'
 import { useDebounce } from '../hooks/useDebounce'
+import { useToast } from '../hooks/useToast'
 import '../App.css'
 
 const DonatePage = () => {
@@ -18,6 +19,7 @@ const DonatePage = () => {
   const [customAmount, setCustomAmount] = useState<string>('')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
+  const { success, error, warning } = useToast()
   
   const debouncedSearch = useDebounce(searchQuery, 300)
 
@@ -78,7 +80,7 @@ const DonatePage = () => {
 
   const handleDonate = async () => {
     if (!selectedFund || amount <= 0) {
-      alert('Выберите фонд и укажите сумму')
+      warning('Выберите фонд и укажите сумму')
       return
     }
 
@@ -92,11 +94,12 @@ const DonatePage = () => {
       })
 
       if (donation.payment_url) {
+        success('Переход на оплату...')
         window.open(donation.payment_url, '_blank')
       }
-    } catch (error) {
-      console.error('Error initiating donation:', error)
-      alert('Ошибка при создании пожертвования')
+    } catch (err: any) {
+      console.error('Error initiating donation:', err)
+      error(err.response?.data?.detail || 'Ошибка при создании пожертвования')
     } finally {
       setDonating(false)
     }
@@ -280,7 +283,11 @@ const DonatePage = () => {
             ) : (
               <>
                 <Icon name="heart" size={18} />
-                Помочь {selectedFund.name}
+                <span className="btn-text-responsive">
+                  Помочь {selectedFund.name.length > 15 
+                    ? `${selectedFund.name.substring(0, 15)}...` 
+                    : selectedFund.name}
+                </span>
               </>
             )}
           </button>

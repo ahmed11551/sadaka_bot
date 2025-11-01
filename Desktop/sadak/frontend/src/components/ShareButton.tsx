@@ -1,4 +1,5 @@
 import Icon from './Icon'
+import { useToast } from '../hooks/useToast'
 import './ShareButton.css'
 
 interface ShareButtonProps {
@@ -8,6 +9,8 @@ interface ShareButtonProps {
 }
 
 const ShareButton = ({ url, title, text }: ShareButtonProps) => {
+  const { success } = useToast()
+  
   const handleShare = async () => {
     const shareText = text || title
     
@@ -24,7 +27,7 @@ const ShareButton = ({ url, title, text }: ShareButtonProps) => {
     } else {
       // Fallback - копируем в буфер
       navigator.clipboard.writeText(`${shareText}\n${url}`)
-      alert('Ссылка скопирована в буфер обмена!')
+      success('Ссылка скопирована в буфер обмена!')
     }
   }
 

@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { subscriptionsService } from '../services/subscriptionsService'
+import LoadingSpinner from '../components/LoadingSpinner'
+import { useToast } from '../hooks/useToast'
 import '../App.css'
 
 type SubscriptionPlan = 'basic' | 'pro' | 'premium'
@@ -7,6 +10,8 @@ type SubscriptionPeriod = 'P1M' | 'P3M' | 'P6M' | 'P12M'
 const SubscriptionPage = () => {
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan>('basic')
   const [selectedPeriod, setSelectedPeriod] = useState<SubscriptionPeriod>('P1M')
+  const [loading, setLoading] = useState(false)
+  const { success, error } = useToast()
 
   const plans = [
     { id: 'basic' as SubscriptionPlan, name: 'Базовый', price: 500 },
@@ -21,9 +26,32 @@ const SubscriptionPage = () => {
     { id: 'P12M' as SubscriptionPeriod, label: '12 месяцев', bonus: '+4 мес. в подарок' },
   ]
 
-  const handleSubscribe = () => {
-    // TODO: Инициализация подписки через API
-    console.log('Subscribe:', { selectedPlan, selectedPeriod })
+  const handleSubscribe = async () => {
+    const selectedPlanData = plans.find(p => p.id === selectedPlan)
+    if (!selectedPlanData) return
+
+    setLoading(true)
+    try {
+      const subscription = await subscriptionsService.initSubscription({
+        plan: selectedPlan,
+        period: selectedPeriod,
+        amount: selectedPlanData.price,
+      })
+
+      if (subscription.payment_url) {
+        success('Подписка создана! Перенаправляем на оплату...')
+        setTimeout(() => {
+          window.open(subscription.payment_url, '_blank')
+        }, 1000)
+      } else {
+        success('Подписка успешно оформлена!')
+      }
+    } catch (err: any) {
+      console.error('Error subscribing:', err)
+      error(err.response?.data?.detail || 'Ошибка при оформлении подписки')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -76,8 +104,20 @@ const SubscriptionPage = () => {
         ))}
       </div>
 
-      <button className="btn btn-primary" onClick={handleSubscribe} style={{ marginTop: '24px' }}>
-        Оформить подписку
+      <button 
+        className="btn btn-primary" 
+        onClick={handleSubscribe} 
+        disabled={loading}
+        style={{ marginTop: '24px' }}
+      >
+        {loading ? (
+          <>
+            <LoadingSpinner size="sm" />
+            Обработка...
+          </>
+        ) : (
+          'Оформить подписку'
+        )}
       </button>
     </div>
   )

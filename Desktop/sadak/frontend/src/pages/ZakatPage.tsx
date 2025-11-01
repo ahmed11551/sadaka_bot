@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { zakatService, ZakatCalc } from '../services/zakatService'
 import Icon from '../components/Icon'
+import { useToast } from '../hooks/useToast'
 import '../App.css'
 
 const ZakatPage = () => {
@@ -12,6 +13,7 @@ const ZakatPage = () => {
   const [result, setResult] = useState<ZakatCalc | null>(null)
   const [calculating, setCalculating] = useState(false)
   const [paying, setPaying] = useState(false)
+  const { success, error, warning } = useToast()
 
   const handleCalculate = async () => {
     setCalculating(true)
@@ -28,9 +30,14 @@ const ZakatPage = () => {
 
       const calcResult = await zakatService.calculate(calculation)
       setResult(calcResult)
-    } catch (error) {
-      console.error('Error calculating zakat:', error)
-      alert('Ошибка при расчете закята')
+      if (parseFloat(calcResult.zakat_due) > 0) {
+        success(`Закят рассчитан: ${parseFloat(calcResult.zakat_due).toLocaleString('ru-RU')} ₽`)
+      } else {
+        warning('Ваше имущество меньше нисаба, закят не требуется')
+      }
+    } catch (err: any) {
+      console.error('Error calculating zakat:', err)
+      error(err.response?.data?.detail || 'Ошибка при расчете закята')
     } finally {
       setCalculating(false)
     }
@@ -38,7 +45,7 @@ const ZakatPage = () => {
 
   const handlePay = async () => {
     if (!result || parseFloat(result.zakat_due) <= 0) {
-      alert('Сначала рассчитайте закят')
+      warning('Сначала рассчитайте закят')
       return
     }
 
@@ -46,11 +53,12 @@ const ZakatPage = () => {
     try {
       const donation = await zakatService.pay(result.id)
       if (donation.payment_url) {
+        success('Переход на оплату...')
         window.open(donation.payment_url, '_blank')
       }
-    } catch (error) {
-      console.error('Error paying zakat:', error)
-      alert('Ошибка при создании пожертвования')
+    } catch (err: any) {
+      console.error('Error paying zakat:', err)
+      error(err.response?.data?.detail || 'Ошибка при создании пожертвования')
     } finally {
       setPaying(false)
     }

@@ -30,6 +30,10 @@ class Settings(BaseSettings):
     # Elasticsearch (опционально)
     ELASTICSEARCH_URL: Optional[str] = None
     
+    # E-Replika API интеграция
+    E_REPLIKA_API_URL: str = "https://bot.e-replika.ru/api"
+    E_REPLIKA_AUTH_TOKEN: str = "test_token_123"
+    
     class Config:
         env_file = ".env"
         case_sensitive = True
