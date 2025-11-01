@@ -1,0 +1,73 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+dist/
+build/
+.next/
+out/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Telegram Bot
+.telegram/
+
+# Frontend build
+frontend/dist/
+frontend/.vite/
+
+# Backend
+backend/__pycache__/
+backend/alembic/versions/*.py
+!backend/alembic/versions/.gitkeep
+backend/*.db
+
+# IDE
+*.code-workspace
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
