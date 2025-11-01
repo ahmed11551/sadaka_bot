@@ -329,6 +329,11 @@
   margin-bottom: var(--spacing-lg);
 }
 
+/* Выбор суммы пожертвования */
+.amount-selection {
+  margin-top: var(--spacing-lg);
+}
+
 /* Прогресс-бар */
 .progress-bar {
   width: 100%;

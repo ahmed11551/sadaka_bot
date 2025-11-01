@@ -57,8 +57,8 @@ def calculate_zakat(
     
     zakat_due = Decimal("0")
     if total_wealth >= nisab_value:
-        # 2.5% = 0.025
-        zakat_due = (total_wealth - nisab_value) * Decimal("0.025")
+        # 2.5% = 0.025 от всего имущества (стандартная формула закята)
+        zakat_due = total_wealth * Decimal("0.025")
     
     # Сохраняем payload для истории
     payload = {
