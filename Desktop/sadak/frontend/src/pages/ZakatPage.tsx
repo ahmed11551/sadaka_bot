@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { zakatService, ZakatCalc } from '../services/zakatService'
-import LoadingSpinner from '../components/LoadingSpinner'
 import '../App.css'
 
 const ZakatPage = () => {

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { campaignsService, Campaign } from '../services/campaignsService'
-import { donationsService } from '../services/donationsService'
 import LoadingSpinner from '../components/LoadingSpinner'
 import Skeleton from '../components/Skeleton'
 import ShareButton from '../components/ShareButton'
@@ -62,7 +61,9 @@ const CampaignDetailPage = () => {
     return (
       <div className="page-container">
         <Skeleton height="32px" width="200px" className="page-title" />
-        <Skeleton height="300px" width="100%" style={{ marginBottom: '24px' }} />
+        <div style={{ marginBottom: '24px' }}>
+          <Skeleton height="300px" width="100%" />
+        </div>
         <Skeleton height="24px" width="80%" className="skeleton-title" />
         <Skeleton height="16px" className="skeleton-text" />
       </div>

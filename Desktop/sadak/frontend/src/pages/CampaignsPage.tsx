@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { campaignsService, Campaign } from '../services/campaignsService'
-import { donationsService } from '../services/donationsService'
-import LoadingSpinner from '../components/LoadingSpinner'
 import Skeleton from '../components/Skeleton'
 import CampaignCard from '../components/CampaignCard'
 import CreateCampaignModal from '../components/CreateCampaignModal'
@@ -23,7 +21,7 @@ const CampaignsPage = () => {
   const debouncedSearch = useDebounce(searchQuery, 300)
   
   // Получаем уникальные категории
-  const categories = Array.from(new Set(campaigns.map(c => c.category).filter(Boolean)))
+  const categories = Array.from(new Set(campaigns.map(c => c.category).filter((cat): cat is string => Boolean(cat))))
 
   useEffect(() => {
     loadCampaigns()
@@ -65,13 +63,6 @@ const CampaignsPage = () => {
     }
   }
 
-  const handleDonate = (campaignId: number) => {
-    const amount = prompt('Введите сумму пожертвования (минимум 100 ₽):')
-    if (amount && parseFloat(amount) >= 100) {
-      navigate(`/campaigns/${campaignId}`)
-    }
-  }
-
   const handleCampaignCreated = () => {
     loadCampaigns()
   }
@@ -85,7 +76,9 @@ const CampaignsPage = () => {
         </div>
         {[1, 2].map((i) => (
           <div key={i} className="card">
-            <Skeleton height="200px" width="100%" style={{ marginBottom: '16px' }} />
+            <div style={{ marginBottom: '16px' }}>
+              <Skeleton height="200px" width="100%" />
+            </div>
             <Skeleton height="24px" width="70%" className="skeleton-title" />
             <Skeleton height="16px" className="skeleton-text" />
             <Skeleton height="16px" width="90%" className="skeleton-text short" />
