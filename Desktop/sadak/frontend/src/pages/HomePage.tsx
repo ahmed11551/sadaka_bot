@@ -1,8 +1,13 @@
 import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import Icon from '../components/Icon'
+import { historyService, UserStats } from '../services/historyService'
+import LoadingSpinner from '../components/LoadingSpinner'
 import '../App.css'
 
 const HomePage = () => {
+  const [stats, setStats] = useState<UserStats | null>(null)
+  const [loadingStats, setLoadingStats] = useState(true)
   const quickActions = [
     { path: '/donate', icon: 'coins' as const, label: 'Пожертвовать', color: '#3b82f6', gradient: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' },
     { path: '/support', icon: 'heart' as const, label: 'Поддержать', color: '#10b981', gradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' },
@@ -16,6 +21,21 @@ const HomePage = () => {
     { icon: 'zap' as const, title: 'Быстро', desc: 'Пожертвование за минуту' },
     { icon: 'globe' as const, title: 'Универсально', desc: 'Поддержка разных фондов' },
   ]
+
+  useEffect(() => {
+    loadStats()
+  }, [])
+
+  const loadStats = async () => {
+    try {
+      const data = await historyService.getStats()
+      setStats(data)
+    } catch (err) {
+      console.error('Error loading stats:', err)
+    } finally {
+      setLoadingStats(false)
+    }
+  }
 
   return (
     <div className="page-container fade-in">
@@ -79,6 +99,115 @@ const HomePage = () => {
           </p>
         </div>
       </div>
+
+      {/* Stats Widget - вдохновлено DAYIM */}
+      {!loadingStats && stats && (
+        <div 
+          className="card"
+          style={{ 
+            marginBottom: '32px',
+            background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
+            border: '1px solid rgba(102, 126, 234, 0.2)',
+            padding: '24px'
+          }}
+        >
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            marginBottom: '16px'
+          }}>
+            <div className="card-title" style={{ margin: 0 }}>
+              Ваша статистика
+            </div>
+            {stats.active_subscriptions > 0 && (
+              <span style={{
+                padding: '4px 12px',
+                borderRadius: '12px',
+                fontSize: '12px',
+                background: 'var(--tg-theme-button-color)',
+                color: 'var(--tg-theme-button-text-color)'
+              }}>
+                {stats.active_subscriptions} {stats.active_subscriptions === 1 ? 'подписка' : 'подписок'}
+              </span>
+            )}
+          </div>
+          
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(2, 1fr)', 
+            gap: '16px' 
+          }}>
+            <div>
+              <div style={{ 
+                fontSize: '14px', 
+                color: 'var(--tg-theme-hint-color)',
+                marginBottom: '4px'
+              }}>
+                За этот месяц
+              </div>
+              <div style={{ 
+                fontSize: '24px', 
+                fontWeight: 'bold',
+                color: 'var(--text-primary)'
+              }}>
+                {stats.total_donations_month.toLocaleString('ru-RU')} {stats.currency}
+              </div>
+              <div style={{ 
+                fontSize: '12px', 
+                color: 'var(--tg-theme-hint-color)',
+                marginTop: '4px'
+              }}>
+                {stats.total_count_month} {stats.total_count_month === 1 ? 'транзакция' : stats.total_count_month < 5 ? 'транзакции' : 'транзакций'}
+              </div>
+            </div>
+            
+            <div>
+              <div style={{ 
+                fontSize: '14px', 
+                color: 'var(--tg-theme-hint-color)',
+                marginBottom: '4px'
+              }}>
+                За этот год
+              </div>
+              <div style={{ 
+                fontSize: '24px', 
+                fontWeight: 'bold',
+                color: 'var(--text-primary)'
+              }}>
+                {stats.total_donations_year.toLocaleString('ru-RU')} {stats.currency}
+              </div>
+              <div style={{ 
+                fontSize: '12px', 
+                color: 'var(--tg-theme-hint-color)',
+                marginTop: '4px'
+              }}>
+                {stats.total_count_year} {stats.total_count_year === 1 ? 'транзакция' : stats.total_count_year < 5 ? 'транзакции' : 'транзакций'}
+              </div>
+            </div>
+          </div>
+
+          {(stats.total_donations_month === 0 && stats.total_donations_year === 0) && (
+            <div style={{
+              marginTop: '16px',
+              padding: '12px',
+              borderRadius: '12px',
+              background: 'rgba(102, 126, 234, 0.05)',
+              textAlign: 'center',
+              fontSize: '14px',
+              color: 'var(--tg-theme-hint-color)'
+            }}>
+              💫 Начните делать добрые дела прямо сейчас!
+            </div>
+          )}
+        </div>
+      )}
+
+      {loadingStats && (
+        <div className="card" style={{ marginBottom: '32px', textAlign: 'center', padding: '32px' }}>
+          <LoadingSpinner size="sm" />
+        </div>
+      )}
 
       {/* Quick Actions */}
       <div style={{ marginBottom: '32px' }}>

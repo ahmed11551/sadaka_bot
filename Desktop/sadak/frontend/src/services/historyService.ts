@@ -21,9 +21,23 @@ export interface HistoryItem {
   next_charge_at?: string
 }
 
+export interface UserStats {
+  total_donations_month: number
+  total_donations_year: number
+  total_count_month: number
+  total_count_year: number
+  active_subscriptions: number
+  currency: string
+}
+
 export const historyService = {
   getHistory: async () => {
     const response = await apiClient.get<HistoryItem[]>('/me/history')
+    return response.data
+  },
+  
+  getStats: async () => {
+    const response = await apiClient.get<UserStats>('/me/stats')
     return response.data
   },
 }
