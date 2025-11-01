@@ -18,8 +18,10 @@ def get_admin_user(
     x_telegram_init_data: str = Header(..., alias="X-Telegram-Init-Data"),
     db: Session = Depends(get_db)
 ):
-    """Получение администратора (пока упрощенная проверка)"""
+    """Получение администратора с проверкой прав"""
     from app.services import donation_service
+    from app.core.config import settings
+    
     user_data = get_user_from_init_data(x_telegram_init_data)
     if not user_data:
         raise HTTPException(status_code=401, detail="Invalid Telegram initData")
@@ -32,8 +34,14 @@ def get_admin_user(
         username=user_data.get("username")
     )
     
-    # TODO: Добавить проверку прав администратора
-    # Пока разрешаем всем авторизованным пользователям
+    # Проверка прав администратора
+    tg_id = user_data.get("id")
+    admin_ids = [int(id.strip()) for id in settings.ADMIN_TELEGRAM_IDS.split(",") if id.strip()] if settings.ADMIN_TELEGRAM_IDS else []
+    
+    if admin_ids and tg_id not in admin_ids:
+        raise HTTPException(status_code=403, detail="Access denied. Admin rights required.")
+    
+    # Если ADMIN_TELEGRAM_IDS не настроен, разрешаем всем (для разработки)
     return user
 
 

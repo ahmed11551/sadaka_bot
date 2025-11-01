@@ -5,6 +5,9 @@
 from typing import Dict, Optional
 from app.core.config import settings
 import httpx
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class PaymentService:
@@ -122,8 +125,7 @@ class PaymentService:
                 "provider": "yookassa"
             }
         except Exception as e:
-            # Логирование ошибки
-            print(f"YooKassa payment init error: {e}")
+            logger.error(f"YooKassa payment init error: {e}", exc_info=True)
             return None
     
     def _init_cloudpayments(
@@ -185,7 +187,7 @@ class PaymentService:
                 "provider": "cloudpayments"
             }
         except Exception as e:
-            print(f"CloudPayments payment init error: {e}")
+            logger.error(f"CloudPayments payment init error: {e}", exc_info=True)
             return None
     
     def verify_webhook(self, provider: str, data: Dict, signature: str) -> bool:

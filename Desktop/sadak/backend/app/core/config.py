@@ -37,6 +37,9 @@ class Settings(BaseSettings):
     E_REPLIKA_API_URL: str = "https://bot.e-replika.ru/api"
     E_REPLIKA_AUTH_TOKEN: str = "test_token_123"
     
+    # Администраторы (Telegram ID через запятую)
+    ADMIN_TELEGRAM_IDS: str = ""  # Пример: "123456789,987654321"
+    
     class Config:
         env_file = ".env"
         case_sensitive = True
