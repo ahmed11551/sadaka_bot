@@ -123,7 +123,9 @@ const SubscriptionPage = () => {
             transition: 'all 0.2s'
           }}
         >
-          <Icon name="zap" size={16} style={{ marginRight: '6px', display: 'inline-block', verticalAlign: 'middle' }} />
+          <span style={{ marginRight: '6px', display: 'inline-block', verticalAlign: 'middle' }}>
+            <Icon name="zap" size={16} />
+          </span>
           Простой режим
         </button>
         <button
@@ -141,7 +143,9 @@ const SubscriptionPage = () => {
             transition: 'all 0.2s'
           }}
         >
-          <Icon name="settings" size={16} style={{ marginRight: '6px', display: 'inline-block', verticalAlign: 'middle' }} />
+          <span style={{ marginRight: '6px', display: 'inline-block', verticalAlign: 'middle' }}>
+            <Icon name="settings" size={16} />
+          </span>
           Тарифы
         </button>
       </div>
