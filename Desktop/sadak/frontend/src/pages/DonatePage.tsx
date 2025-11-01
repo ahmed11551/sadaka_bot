@@ -225,7 +225,7 @@ const DonatePage = () => {
       {/* Выбор суммы */}
       {selectedFund && (
         <div className="amount-selection fade-in" style={{ marginTop: '32px' }}>
-          <h3 style={{ marginBottom: '20px' }}>Выберите сумму пожертвования</h3>
+          <h3 style={{ marginBottom: '20px', fontSize: '20px', fontWeight: '700' }}>Выберите сумму пожертвования</h3>
           <div className="preset-amounts">
             {presetAmounts.map((preset) => (
               <button
@@ -282,11 +282,9 @@ const DonatePage = () => {
               </>
             ) : (
               <>
-                <Icon name="heart" size={18} />
+                <Icon name="heart" size={20} />
                 <span className="btn-text-responsive">
-                  Помочь {selectedFund.name.length > 15 
-                    ? `${selectedFund.name.substring(0, 15)}...` 
-                    : selectedFund.name}
+                  Пожертвовать {amount.toLocaleString('ru-RU')} ₽
                 </span>
               </>
             )}

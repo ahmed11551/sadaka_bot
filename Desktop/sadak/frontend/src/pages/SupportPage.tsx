@@ -85,7 +85,7 @@ const SupportPage = () => {
       </div>
 
       <div className="amount-selection">
-        <h3 style={{ marginBottom: '20px' }}>Выберите сумму</h3>
+        <h3 style={{ marginBottom: '20px', fontSize: '20px', fontWeight: '700' }}>Выберите сумму</h3>
         <div className="preset-amounts">
           {presetAmounts.map((preset) => (
             <button
@@ -144,8 +144,8 @@ const SupportPage = () => {
             </>
           ) : (
             <>
-              <Icon name="heart" size={18} />
-              Поддержать проект
+              <Icon name="heart" size={20} />
+              Перейти к оплате
             </>
           )}
         </button>
