@@ -4,6 +4,7 @@ import { campaignsService, Campaign } from '../services/campaignsService'
 import LoadingSpinner from '../components/LoadingSpinner'
 import Skeleton from '../components/Skeleton'
 import ShareButton from '../components/ShareButton'
+import Icon from '../components/Icon'
 import '../App.css'
 
 const CampaignDetailPage = () => {
@@ -147,8 +148,9 @@ const CampaignDetailPage = () => {
               <div style={{ fontSize: '12px', opacity: 0.9 }}>Цель</div>
             </div>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '24px', fontWeight: '600', marginBottom: '4px' }}>
-                👥 {campaign.participants_count}
+              <div style={{ fontSize: '24px', fontWeight: '600', marginBottom: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                <Icon name="users" size={20} />
+                {campaign.participants_count}
               </div>
               <div style={{ fontSize: '12px', opacity: 0.9 }}>Участников</div>
             </div>
@@ -177,7 +179,7 @@ const CampaignDetailPage = () => {
               disabled={campaign.status !== 'active'}
               style={{ flex: 1 }}
             >
-              <span>💝</span>
+              <Icon name="heart" size={18} />
               Поддержать кампанию
             </button>
             <ShareButton
@@ -235,7 +237,7 @@ const CampaignDetailPage = () => {
                   </>
                 ) : (
                   <>
-                    <span>💝</span>
+                    <Icon name="heart" size={18} />
                     Пожертвовать
                   </>
                 )}

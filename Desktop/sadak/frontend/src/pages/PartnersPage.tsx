@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { fundsService, Fund } from '../services/fundsService'
+import Icon from '../components/Icon'
 import '../App.css'
 
 const PartnersPage = () => {
@@ -55,7 +56,8 @@ const PartnersPage = () => {
                 <div className="card-title">{fund.name}</div>
                 {fund.verified && (
                   <span className="badge" style={{ marginTop: '4px' }}>
-                    ✓ Проверено
+                    <Icon name="checkCircle" size={14} />
+                    Проверено
                   </span>
                 )}
               </div>

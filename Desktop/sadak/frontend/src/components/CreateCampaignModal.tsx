@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { campaignsService, CampaignCreate } from '../services/campaignsService'
 import LoadingSpinner from '../components/LoadingSpinner'
+import Icon from './Icon'
 import './CreateCampaignModal.css'
 
 interface CreateCampaignModalProps {
@@ -239,7 +240,7 @@ const CreateCampaignModal = ({ isOpen, onClose, onSuccess }: CreateCampaignModal
                 </>
               ) : (
                 <>
-                  <span>✓</span>
+                  <Icon name="check" size={18} />
                   Создать кампанию
                 </>
               )}

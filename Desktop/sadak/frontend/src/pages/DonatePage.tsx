@@ -4,6 +4,7 @@ import { donationsService } from '../services/donationsService'
 import LoadingSpinner from '../components/LoadingSpinner'
 import Skeleton from '../components/Skeleton'
 import FilterBar from '../components/FilterBar'
+import Icon from '../components/Icon'
 import { useDebounce } from '../hooks/useDebounce'
 import '../App.css'
 
@@ -122,7 +123,7 @@ const DonatePage = () => {
   return (
     <div className="page-container fade-in">
       <h1 className="page-title">
-        <span>💰</span>
+        <Icon name="coins" size={28} />
         Пожертвовать
       </h1>
       <p className="page-subtitle">
@@ -134,7 +135,7 @@ const DonatePage = () => {
         <input
           type="text"
           className="form-input"
-          placeholder="🔍 Поиск фондов..."
+          placeholder="Поиск фондов..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           style={{ marginBottom: '12px' }}
@@ -196,7 +197,7 @@ const DonatePage = () => {
                     <div className="card-title">{fund.name}</div>
                     {fund.verified && (
                       <span className="badge">
-                        <span>✓</span>
+                        <Icon name="checkCircle" size={14} />
                         Проверено
                       </span>
                     )}
@@ -278,7 +279,7 @@ const DonatePage = () => {
               </>
             ) : (
               <>
-                <span>💝</span>
+                <Icon name="heart" size={18} />
                 Помочь {selectedFund.name}
               </>
             )}

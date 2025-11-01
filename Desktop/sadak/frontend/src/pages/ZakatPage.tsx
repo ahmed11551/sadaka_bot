@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { zakatService, ZakatCalc } from '../services/zakatService'
+import Icon from '../components/Icon'
 import '../App.css'
 
 const ZakatPage = () => {
@@ -58,7 +59,7 @@ const ZakatPage = () => {
   return (
     <div className="page-container fade-in">
       <h1 className="page-title">
-        <span>📿</span>
+        <Icon name="handHeart" size={28} />
         Калькулятор закята
       </h1>
       <p className="page-subtitle">
@@ -74,7 +75,9 @@ const ZakatPage = () => {
           textAlign: 'center'
         }}
       >
-        <div style={{ fontSize: '48px', marginBottom: '12px' }}>📿</div>
+        <div style={{ marginBottom: '12px' }}>
+          <Icon name="handHeart" size={48} color="#ffffff" />
+        </div>
         <h3 style={{ color: '#ffffff', marginBottom: '8px' }}>Закят</h3>
         <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', margin: 0 }}>
           Обязательное пожертвование с имущества мусульманина

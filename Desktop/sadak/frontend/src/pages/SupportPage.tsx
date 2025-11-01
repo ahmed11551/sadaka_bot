@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { donationsService } from '../services/donationsService'
 import LoadingSpinner from '../components/LoadingSpinner'
+import Icon from '../components/Icon'
 import '../App.css'
 
 const SupportPage = () => {
@@ -51,7 +52,7 @@ const SupportPage = () => {
   return (
     <div className="page-container fade-in">
       <h1 className="page-title">
-        <span>💝</span>
+        <Icon name="heart" size={28} />
         Поддержать проект
       </h1>
       <p className="page-subtitle">
@@ -69,7 +70,9 @@ const SupportPage = () => {
           boxShadow: 'var(--shadow-xl)'
         }}
       >
-        <div style={{ fontSize: '48px', marginBottom: '16px' }}>🤲</div>
+        <div style={{ marginBottom: '16px' }}>
+          <Icon name="handHeart" size={48} color="#ffffff" />
+        </div>
         <h2 style={{ fontSize: '24px', marginBottom: '8px', color: '#ffffff' }}>
           Ваше пожертвование помогает
         </h2>
@@ -138,7 +141,7 @@ const SupportPage = () => {
             </>
           ) : (
             <>
-              <span>💝</span>
+              <Icon name="heart" size={18} />
               Поддержать проект
             </>
           )}
