@@ -84,6 +84,7 @@ export default function QuranReader({
     if (searchQuery) {
       setShowSearch(true)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -96,6 +97,7 @@ export default function QuranReader({
       saveReadingHistory(currentSurah, currentAyah || 1)
       updateReadingStats(currentSurah)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSurah])
 
   // Сохранение истории чтения

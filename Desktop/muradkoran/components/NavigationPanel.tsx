@@ -214,7 +214,7 @@ export default function NavigationPanel({
             <div className="space-y-4">
               <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                 <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
-                  Для поиска по тексту аятов используйте кнопку "Умный поиск" в главном меню.
+                  Для поиска по тексту аятов используйте кнопку &quot;Умный поиск&quot; в главном меню.
                 </p>
                 <button
                   onClick={() => {
