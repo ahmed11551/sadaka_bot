@@ -111,10 +111,10 @@ const CampaignsPage = () => {
     <div className="page-container fade-in">
       <h1 className="page-title">
         <Icon name="target" size={28} />
-        Целевые кампании
+        Целевые благотворительные кампании
       </h1>
       <p className="page-subtitle">
-        Поддержите конкретные проекты и следите за их прогрессом
+        Поддержите конкретные благотворительные проекты и отслеживайте их прогресс в режиме реального времени
       </p>
       
       <div style={{ marginBottom: '24px' }}>
@@ -124,7 +124,7 @@ const CampaignsPage = () => {
               style={{ marginBottom: '16px' }}
             >
               <Icon name="plus" size={20} />
-              <span className="btn-text-responsive">Создать цель</span>
+              <span className="btn-text-responsive">Создать благотворительную кампанию</span>
             </button>
 
         {/* Поиск и фильтры */}
@@ -141,9 +141,9 @@ const CampaignsPage = () => {
           <FilterBar
             filters={[
               {
-                label: 'Страна',
+                label: 'Географическое расположение',
                 options: [
-                  { value: '', label: 'Все страны' },
+                  { value: '', label: 'Все страны и регионы' },
                   ...countries,
                 ],
                 value: selectedCountry,
@@ -152,20 +152,20 @@ const CampaignsPage = () => {
                 },
               },
               ...(categories.length > 0 ? [{
-                label: 'Категория',
+                label: 'Категория проекта',
                 options: [
-                  { value: '', label: 'Все категории' },
+                  { value: '', label: 'Все категории проектов' },
                   ...categories.map(cat => ({ value: cat, label: cat })),
                 ],
                 value: selectedCategory,
                 onChange: setSelectedCategory,
               }] : []),
               {
-                label: 'Статус',
+                label: 'Статус кампании',
                 options: [
-                  { value: 'active', label: 'Активные' },
-                  { value: 'completed', label: 'Завершенные' },
-                  { value: 'pending', label: 'На модерации' },
+                  { value: 'active', label: 'Активные кампании' },
+                  { value: 'completed', label: 'Завершённые кампании' },
+                  { value: 'pending', label: 'Ожидающие модерации' },
                 ],
                 value: selectedStatus,
                 onChange: (value) => {
@@ -177,14 +177,14 @@ const CampaignsPage = () => {
           
           {/* Сортировка */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-            <label style={{ fontSize: '14px', color: 'var(--text-muted)', fontWeight: '500' }}>
-              Сортировка:
+            <label style={{ fontSize: '15px', color: 'var(--text-secondary)', fontWeight: '600', letterSpacing: '-0.01em' }}>
+              Сортировка результатов:
             </label>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               {[
-                { value: 'newest', label: '🆕 Новые' },
-                { value: 'popularity', label: '⭐ Популярные' },
-                { value: 'progress', label: '📈 По прогрессу' },
+                { value: 'newest', label: 'Новейшие кампании' },
+                { value: 'popularity', label: 'Наиболее популярные' },
+                { value: 'progress', label: 'По уровню прогресса' },
               ].map((option) => (
                 <button
                   key={option.value}
@@ -210,9 +210,9 @@ const CampaignsPage = () => {
           <div style={{ marginBottom: '16px' }}>
             <Icon name="search" size={64} color="var(--text-muted)" />
           </div>
-          <h3 style={{ marginBottom: '8px' }}>Кампании не найдены</h3>
-          <p style={{ color: 'var(--text-muted)' }}>
-            Попробуйте изменить фильтры поиска
+          <h3 style={{ marginBottom: '8px', fontWeight: '600' }}>Кампании не найдены</h3>
+          <p style={{ color: 'var(--text-muted)', fontSize: '15px', lineHeight: '1.6' }}>
+            Попробуйте изменить параметры фильтрации или критерии поиска
           </p>
         </div>
       ) : campaigns.length === 0 ? (

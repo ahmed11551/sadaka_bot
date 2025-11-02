@@ -35,15 +35,16 @@ const SubscriptionPage = () => {
 
   // Расчет месячной суммы для простого режима
   const calculateMonthlyAmount = () => {
+    const amount = Math.max(0, Math.min(simpleAmount, 1000000)) // Защита от больших значений
     switch (simpleFrequency) {
       case 'daily':
-        return simpleAmount * 30
+        return Math.min(amount * 30, 100000000) // Защита от переполнения
       case 'weekly':
-        return simpleAmount * 4
+        return Math.min(amount * 4, 100000000)
       case 'monthly':
-        return simpleAmount
+        return amount
       default:
-        return simpleAmount
+        return amount
     }
   }
 
@@ -93,7 +94,10 @@ const SubscriptionPage = () => {
 
   return (
     <div className="page-container">
-      <h1 className="page-title">Садака-подписка</h1>
+      <h1 className="page-title">
+        <Icon name="calendar" size={28} />
+        Садака-джария (Регулярная подписка)
+      </h1>
       <p style={{ marginBottom: '24px', color: 'var(--tg-theme-hint-color)' }}>
         Регулярные пожертвования для постоянной поддержки благотворительности
       </p>

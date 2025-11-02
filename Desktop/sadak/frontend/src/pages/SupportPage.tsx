@@ -19,10 +19,15 @@ const SupportPage = () => {
   }
 
   const handleCustomAmount = (value: string) => {
-    setCustomAmount(value)
     const numValue = parseFloat(value)
-    if (!isNaN(numValue) && numValue > 0) {
-      setAmount(numValue)
+    // Валидация: только положительные числа, максимум разумная сумма
+    if (value === '' || (!isNaN(numValue) && numValue > 0 && numValue <= 100000000)) {
+      setCustomAmount(value)
+      if (!isNaN(numValue) && numValue > 0) {
+        setAmount(numValue)
+      } else {
+        setAmount(0)
+      }
     }
   }
 
@@ -56,10 +61,10 @@ const SupportPage = () => {
     <div className="page-container fade-in">
       <h1 className="page-title">
         <Icon name="heart" size={28} />
-        Поддержать проект
+        Поддержка проекта
       </h1>
       <p className="page-subtitle">
-        Быстрое пожертвование на общие цели благотворительности
+        Быстрое благотворительное пожертвование для поддержки развития проекта MubarakWay
       </p>
 
       <div 
@@ -107,6 +112,7 @@ const SupportPage = () => {
             onChange={(e) => handleCustomAmount(e.target.value)}
             min="1"
             step="1"
+            max="100000000"
           />
         </div>
 
@@ -135,7 +141,17 @@ const SupportPage = () => {
           className="btn btn-primary" 
           onClick={handleDonate}
           disabled={amount <= 0 || donating}
-          style={{ fontSize: '18px', padding: '16px' }}
+          style={{ 
+            fontSize: '20px', 
+            padding: '20px 32px',
+            minHeight: '64px',
+            background: amount > 0 && !donating 
+              ? 'linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)' 
+              : undefined,
+            boxShadow: amount > 0 && !donating
+              ? '0 8px 24px rgba(16, 185, 129, 0.5), 0 4px 12px rgba(16, 185, 129, 0.3)'
+              : undefined
+          }}
         >
           {donating ? (
             <>
@@ -144,8 +160,10 @@ const SupportPage = () => {
             </>
           ) : (
             <>
-              <Icon name="heart" size={20} />
-              Перейти к оплате
+              <Icon name="heart" size={22} color="#ffffff" />
+              <span style={{ marginLeft: '8px', fontWeight: '700' }}>
+                Перейти к оплате
+              </span>
             </>
           )}
         </button>

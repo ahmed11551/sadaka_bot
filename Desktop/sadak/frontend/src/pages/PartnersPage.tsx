@@ -36,7 +36,10 @@ const PartnersPage = () => {
 
   return (
     <div className="page-container">
-      <h1 className="page-title">Фонды-партнёры</h1>
+      <h1 className="page-title">
+        <Icon name="building" size={28} />
+        Благотворительные фонды-партнёры
+      </h1>
       <p style={{ marginBottom: '24px', color: 'var(--tg-theme-hint-color)' }}>
         Проверенные благотворительные организации
       </p>

@@ -167,7 +167,7 @@ const CampaignDetailPage = () => {
 
       <div className="card" style={{ marginBottom: '24px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-          <h1 className="page-title" style={{ margin: 0, fontSize: '28px' }}>
+          <h1 className="page-title" style={{ margin: 0, fontSize: '32px', fontWeight: 800, letterSpacing: '-0.03em' }}>
             {campaign.title}
           </h1>
           {campaign.category && (
@@ -290,7 +290,7 @@ const CampaignDetailPage = () => {
                 ) : (
                   <>
                     <Icon name="heart" size={18} />
-                    Пожертвовать
+                    Поддержать кампанию
                   </>
                 )}
               </button>

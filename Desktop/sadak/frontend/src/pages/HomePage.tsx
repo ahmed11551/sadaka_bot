@@ -3,23 +3,19 @@ import { useState, useEffect } from 'react'
 import Icon from '../components/Icon'
 import { historyService, UserStats } from '../services/historyService'
 import LoadingSpinner from '../components/LoadingSpinner'
+import UrgentCampaignsCarousel from '../components/UrgentCampaignsCarousel'
+import PullToRefresh from '../components/PullToRefresh'
+import { haptic } from '../utils/haptic'
 import '../App.css'
 
 const HomePage = () => {
   const [stats, setStats] = useState<UserStats | null>(null)
   const [loadingStats, setLoadingStats] = useState(true)
   const quickActions = [
-    { path: '/donate', icon: 'coins' as const, label: 'Пожертвовать', color: '#3b82f6', gradient: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' },
-    { path: '/support', icon: 'heart' as const, label: 'Поддержать', color: '#10b981', gradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' },
-    { path: '/campaigns', icon: 'target' as const, label: 'Кампании', color: '#f59e0b', gradient: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' },
-    { path: '/zakat', icon: 'handHeart' as const, label: 'Закят', color: '#8b5cf6', gradient: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)' },
-  ]
-
-  const features = [
-    { icon: 'shield' as const, title: 'Безопасно', desc: 'Защищенные платежи' },
-    { icon: 'checkCircle' as const, title: 'Прозрачно', desc: 'Отчеты по каждому проекту' },
-    { icon: 'zap' as const, title: 'Быстро', desc: 'Пожертвование за минуту' },
-    { icon: 'globe' as const, title: 'Универсально', desc: 'Поддержка разных фондов' },
+    { path: '/donate', icon: 'coins' as const, label: 'Пожертвования', color: '#3b82f6', gradient: 'linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%)' },
+    { path: '/support', icon: 'heart' as const, label: 'Поддержать', color: '#10b981', gradient: 'linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)' },
+    { path: '/campaigns', icon: 'target' as const, label: 'Кампании', color: '#f59e0b', gradient: 'linear-gradient(135deg, #fcd34d 0%, #f59e0b 50%, #d97706 100%)' },
+    { path: '/zakat', icon: 'handHeart' as const, label: 'Закят', color: '#10b981', gradient: 'linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)' },
   ]
 
   useEffect(() => {
@@ -28,105 +24,163 @@ const HomePage = () => {
 
   const loadStats = async () => {
     try {
+      setLoadingStats(true)
       const data = await historyService.getStats()
       setStats(data)
+      haptic.notificationOccurred('success')
     } catch (err) {
       console.error('Error loading stats:', err)
+      haptic.notificationOccurred('error')
     } finally {
       setLoadingStats(false)
     }
   }
 
+  const handleRefresh = async () => {
+    haptic.impactOccurred('medium')
+    await loadStats()
+  }
+
   return (
-    <div className="page-container fade-in">
-      {/* Hero Section */}
-      <div 
-        className="hero-section"
-        style={{ 
-          borderRadius: '24px', 
-          padding: '48px 24px', 
-          marginBottom: '32px',
-          textAlign: 'center',
+    <PullToRefresh onRefresh={handleRefresh}>
+      <div className="page-container fade-in">
+      {/* Заголовок в стиле BankDash */}
+      <div style={{ 
+        marginBottom: '24px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}>
+        <h1 style={{ 
+          fontSize: '32px', 
+          fontWeight: 800,
+          color: 'var(--text-heading)',
+          margin: 0,
+          letterSpacing: '-0.03em',
+          lineHeight: '1.15'
+        }}>
+          Обзор платформы
+        </h1>
+        {/* Индикатор обновления для теста */}
+        <div style={{
+          padding: '6px 12px',
+          background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+          borderRadius: '20px',
+          fontSize: '11px',
           color: '#ffffff',
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
-          boxShadow: '0 20px 40px rgba(102, 126, 234, 0.3)',
-          position: 'relative',
-          overflow: 'hidden'
-        }}
-      >
-        <div 
-          style={{ 
-            position: 'absolute',
-            top: '-50%',
-            right: '-50%',
-            width: '200%',
-            height: '200%',
-            background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
-            animation: 'float 6s ease-in-out infinite'
-          }}
-        />
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ 
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '80px',
-            height: '80px',
-            borderRadius: '50%',
-            background: 'rgba(255, 255, 255, 0.2)',
-            backdropFilter: 'blur(10px)',
-            marginBottom: '20px',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
-          }}>
-            <Icon name="handHeart" size={40} color="#ffffff" strokeWidth={2.5} />
-          </div>
-          <h1 style={{ 
-            fontSize: '32px', 
-            marginBottom: '12px', 
-            color: '#ffffff',
-            fontWeight: 700,
-            textShadow: '0 2px 10px rgba(0,0,0,0.2)'
-          }}>
-            Садака-Пасс
-          </h1>
-          <p style={{ 
-            fontSize: '18px', 
-            opacity: 0.95, 
-            marginBottom: 0,
-            textShadow: '0 1px 5px rgba(0,0,0,0.1)'
-          }}>
-            Современная платформа для благотворительных пожертвований
-          </p>
+          fontWeight: 600,
+          boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)',
+          animation: 'pulse 2s ease-in-out infinite'
+        }}>
+          ✨ Обновлено
         </div>
       </div>
 
-      {/* Stats Widget - вдохновлено DAYIM */}
+      {/* Карусель срочных кампаний - ВЕРХНИЙ БЛОК */}
+      <UrgentCampaignsCarousel maxItems={5} />
+
+      {/* Quick Actions - в стиле BankDash Quick Transfer */}
+      <div style={{ marginBottom: '32px' }}>
+        <h2 style={{ 
+          fontSize: '24px', 
+          fontWeight: 700,
+          color: 'var(--text-heading)',
+          marginBottom: '20px',
+          padding: '0 4px',
+          letterSpacing: '-0.02em'
+        }}>
+          Быстрые действия
+        </h2>
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(4, 1fr)', 
+          gap: '12px',
+          padding: '0 4px'
+        }}>
+          {quickActions.map((action, index) => (
+            <Link
+              key={action.path}
+              to={action.path}
+              className="card interactive-card stagger-item"
+              onClick={() => haptic.impactOccurred('light')}
+              style={{ 
+                textDecoration: 'none',
+                textAlign: 'center',
+                padding: '20px 12px',
+                borderRadius: '25px',
+                background: '#ffffff',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)',
+                border: '0.5px solid rgba(0,0,0,0.08)',
+                transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                position: 'relative',
+                overflow: 'hidden',
+                animationDelay: `${index * 0.05}s`,
+              }}
+            >
+              <div style={{ 
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '48px',
+                height: '48px',
+                borderRadius: '15px',
+                background: action.gradient,
+                marginBottom: '12px',
+                boxShadow: `0 4px 12px ${action.color}30`,
+              }}>
+                <Icon name={action.icon} size={24} color="#ffffff" strokeWidth={2.5} />
+              </div>
+              <div style={{ 
+                fontSize: '13px',
+                fontWeight: 500,
+                color: '#343c6a',
+                lineHeight: 1.3
+              }}>
+                {action.label}
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* Stats Widget - в стиле BankDash */}
       {!loadingStats && stats && (
         <div 
           className="card"
           style={{ 
             marginBottom: '32px',
-            background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
-            border: '1px solid rgba(102, 126, 234, 0.2)',
-            padding: '24px'
+            padding: '28px',
+            borderRadius: '25px',
+            background: '#ffffff',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)',
+            border: '0.5px solid rgba(0,0,0,0.08)',
+            animation: 'scaleIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) backwards',
+            animationDelay: '0.2s'
           }}
         >
           <div style={{ 
             display: 'flex', 
             justifyContent: 'space-between', 
             alignItems: 'center',
-            marginBottom: '16px'
+            marginBottom: '24px'
           }}>
-            <div className="card-title" style={{ margin: 0 }}>
+            <h2 style={{ 
+              fontSize: '22px', 
+              fontWeight: 600,
+              color: '#343c6a',
+              margin: 0
+            }}>
               Ваша статистика
-            </div>
+            </h2>
             {stats.active_subscriptions > 0 && (
               <span style={{
-                padding: '4px 12px',
-                borderRadius: '12px',
-                fontSize: '12px',
-                background: 'var(--tg-theme-button-color)',
-                color: 'var(--tg-theme-button-text-color)'
+                padding: '6px 14px',
+                borderRadius: '20px',
+                fontSize: '13px',
+                fontWeight: 500,
+                background: 'linear-gradient(135deg, #2d60ff 0%, #1814f3 100%)',
+                color: '#ffffff',
+                boxShadow: '0 2px 8px rgba(45, 96, 255, 0.25)'
               }}>
                 {stats.active_subscriptions} {stats.active_subscriptions === 1 ? 'подписка' : 'подписок'}
               </span>
@@ -136,51 +190,67 @@ const HomePage = () => {
           <div style={{ 
             display: 'grid', 
             gridTemplateColumns: 'repeat(2, 1fr)', 
-            gap: '16px' 
+            gap: '20px' 
           }}>
-            <div>
+            <div style={{
+              padding: '20px',
+              borderRadius: '20px',
+              background: 'linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%)',
+              border: '1px solid rgba(113, 142, 191, 0.1)'
+            }}>
               <div style={{ 
-                fontSize: '14px', 
-                color: 'var(--tg-theme-hint-color)',
-                marginBottom: '4px'
+                fontSize: '13px', 
+                color: '#718ebf',
+                marginBottom: '8px',
+                fontWeight: 400
               }}>
                 За этот месяц
               </div>
               <div style={{ 
-                fontSize: '24px', 
-                fontWeight: 'bold',
-                color: 'var(--text-primary)'
+                fontSize: '28px', 
+                fontWeight: 600,
+                color: '#343c6a',
+                marginBottom: '8px',
+                letterSpacing: '-0.5px'
               }}>
                 {stats.total_donations_month.toLocaleString('ru-RU')} {stats.currency}
               </div>
               <div style={{ 
-                fontSize: '12px', 
-                color: 'var(--tg-theme-hint-color)',
-                marginTop: '4px'
+                fontSize: '13px', 
+                color: '#718ebf',
+                fontWeight: 400
               }}>
                 {stats.total_count_month} {stats.total_count_month === 1 ? 'транзакция' : stats.total_count_month < 5 ? 'транзакции' : 'транзакций'}
               </div>
             </div>
             
-            <div>
+            <div style={{
+              padding: '20px',
+              borderRadius: '20px',
+              background: 'linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%)',
+              border: '1px solid rgba(113, 142, 191, 0.1)'
+            }}>
               <div style={{ 
-                fontSize: '14px', 
-                color: 'var(--tg-theme-hint-color)',
-                marginBottom: '4px'
+                fontSize: '13px', 
+                color: '#718ebf',
+                marginBottom: '8px',
+                fontWeight: 400
               }}>
                 За этот год
               </div>
               <div style={{ 
-                fontSize: '24px', 
-                fontWeight: 'bold',
-                color: 'var(--text-primary)'
+                fontSize: '28px', 
+                fontWeight: 600,
+                color: '#343c6a',
+                marginBottom: '8px',
+                letterSpacing: '-0.5px'
               }}>
                 {stats.total_donations_year.toLocaleString('ru-RU')} {stats.currency}
               </div>
               <div style={{ 
-                fontSize: '12px', 
-                color: 'var(--tg-theme-hint-color)',
-                marginTop: '4px'
+                fontSize: '13px', 
+                color: '#718ebf',
+                fontWeight: 400
               }}>
                 {stats.total_count_year} {stats.total_count_year === 1 ? 'транзакция' : stats.total_count_year < 5 ? 'транзакции' : 'транзакций'}
               </div>
@@ -189,13 +259,15 @@ const HomePage = () => {
 
           {(stats.total_donations_month === 0 && stats.total_donations_year === 0) && (
             <div style={{
-              marginTop: '16px',
-              padding: '12px',
-              borderRadius: '12px',
-              background: 'rgba(102, 126, 234, 0.05)',
+              marginTop: '20px',
+              padding: '16px',
+              borderRadius: '15px',
+              background: 'linear-gradient(135deg, rgba(45, 96, 255, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)',
               textAlign: 'center',
               fontSize: '14px',
-              color: 'var(--tg-theme-hint-color)'
+              color: '#718ebf',
+              fontWeight: 400,
+              border: '1px solid rgba(113, 142, 191, 0.15)'
             }}>
               💫 Начните делать добрые дела прямо сейчас!
             </div>
@@ -204,134 +276,12 @@ const HomePage = () => {
       )}
 
       {loadingStats && (
-        <div className="card" style={{ marginBottom: '32px', textAlign: 'center', padding: '32px' }}>
+        <div className="card" style={{ marginBottom: '32px', textAlign: 'center', padding: '32px', borderRadius: '25px' }}>
           <LoadingSpinner size="sm" />
         </div>
       )}
-
-      {/* Quick Actions */}
-      <div style={{ marginBottom: '32px' }}>
-        <h2 style={{ fontSize: '20px', marginBottom: '16px' }}>Быстрые действия</h2>
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(2, 1fr)', 
-          gap: '12px' 
-        }}>
-          {quickActions.map((action) => (
-            <Link
-              key={action.path}
-              to={action.path}
-              className="quick-action-card"
-              style={{ 
-                textDecoration: 'none', 
-                textAlign: 'center',
-                padding: '28px 20px',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                position: 'relative',
-                overflow: 'hidden'
-              }}
-            >
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: action.gradient,
-                opacity: 0.05,
-                transition: 'opacity 0.3s'
-              }} />
-              <div style={{ 
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '64px',
-                height: '64px',
-                borderRadius: '16px',
-                background: action.gradient,
-                marginBottom: '16px',
-                boxShadow: `0 8px 16px ${action.color}40`,
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                position: 'relative',
-                zIndex: 1
-              }}>
-                <Icon name={action.icon} size={32} color="#ffffff" strokeWidth={2.5} />
-              </div>
-              <div className="card-title" style={{ 
-                margin: 0,
-                position: 'relative',
-                zIndex: 1,
-                fontWeight: 600
-              }}>
-                {action.label}
-              </div>
-            </Link>
-          ))}
-        </div>
       </div>
-
-      {/* Features */}
-      <div style={{ marginBottom: '32px' }}>
-        <h2 style={{ fontSize: '20px', marginBottom: '16px' }}>Почему Садака-Пасс?</h2>
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(2, 1fr)', 
-          gap: '12px' 
-        }}>
-          {features.map((feature, idx) => (
-            <div 
-              key={idx}
-              className="feature-card"
-              style={{ 
-                textAlign: 'center',
-                padding: '24px 16px',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-              }}
-            >
-              <div style={{ 
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '56px',
-                height: '56px',
-                borderRadius: '14px',
-                background: 'linear-gradient(135deg, rgba(36, 129, 204, 0.1) 0%, rgba(36, 129, 204, 0.05) 100%)',
-                marginBottom: '12px',
-                transition: 'all 0.3s'
-              }}>
-                <Icon name={feature.icon} size={28} color="var(--primary)" strokeWidth={2.5} />
-              </div>
-              <div style={{ 
-                fontSize: '16px', 
-                fontWeight: '600', 
-                marginBottom: '6px',
-                color: 'var(--text-primary)'
-              }}>
-                {feature.title}
-              </div>
-              <div style={{ 
-                fontSize: '13px', 
-                color: 'var(--text-muted)',
-                lineHeight: '1.4'
-              }}>
-                {feature.desc}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* About */}
-      <div className="card">
-        <div className="card-title">О проекте</div>
-        <div className="card-description">
-          Садака-Пасс — это универсальная платформа для совершения благотворительных 
-          пожертвований (садака, закят), управления регулярными подписками (садака-джария) 
-          и организации целевых кампаний. Мы обеспечиваем прозрачность, безопасность 
-          и удобство для доноров и получателей помощи.
-        </div>
-      </div>
-    </div>
+    </PullToRefresh>
   )
 }
 

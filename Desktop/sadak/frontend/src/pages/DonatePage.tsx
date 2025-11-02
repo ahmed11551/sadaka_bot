@@ -7,6 +7,7 @@ import FilterBar from '../components/FilterBar'
 import Icon from '../components/Icon'
 import { useDebounce } from '../hooks/useDebounce'
 import { useToast } from '../hooks/useToast'
+import { haptic } from '../utils/haptic'
 import '../App.css'
 
 const DonatePage = () => {
@@ -66,6 +67,7 @@ const DonatePage = () => {
   }
 
   const handleAmountSelect = (value: number) => {
+    haptic.selectionChanged()
     setAmount(value)
     setCustomAmount('')
   }
@@ -73,8 +75,14 @@ const DonatePage = () => {
   const handleCustomAmount = (value: string) => {
     setCustomAmount(value)
     const numValue = parseFloat(value)
-    if (!isNaN(numValue) && numValue > 0) {
-      setAmount(numValue)
+    // Валидация: только положительные числа, максимум разумная сумма
+    if (value === '' || (!isNaN(numValue) && numValue > 0 && numValue <= 100000000)) {
+      setCustomAmount(value)
+      if (!isNaN(numValue) && numValue > 0) {
+        setAmount(numValue)
+      } else {
+        setAmount(0)
+      }
     }
   }
 
@@ -84,6 +92,7 @@ const DonatePage = () => {
       return
     }
 
+    haptic.impactOccurred('medium')
     setDonating(true)
     try {
       const donation = await donationsService.initDonation({
@@ -94,6 +103,7 @@ const DonatePage = () => {
       })
 
       if (donation.payment_url) {
+        haptic.notificationOccurred('success')
         success('Переход на оплату...')
         window.open(donation.payment_url, '_blank')
       }
@@ -127,10 +137,10 @@ const DonatePage = () => {
     <div className="page-container fade-in">
       <h1 className="page-title">
         <Icon name="coins" size={28} />
-        Пожертвовать
+        Пожертвование в фонды
       </h1>
       <p className="page-subtitle">
-        Выберите фонд и поддержите благотворительный проект
+        Выберите благотворительный фонд и сумму для единоразового пожертвования
       </p>
 
       {/* Поиск и фильтры */}
@@ -175,12 +185,15 @@ const DonatePage = () => {
           filteredFunds.map((fund) => (
             <div
               key={fund.id}
-              className={`card ${selectedFund?.id === fund.id ? 'selected' : ''}`}
-              onClick={() => setSelectedFund(fund)}
+              className={`card interactive-card ${selectedFund?.id === fund.id ? 'selected' : ''}`}
+              onClick={() => {
+                haptic.selectionChanged()
+                setSelectedFund(fund)
+              }}
             >
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
                 {fund.logo_url ? (
-                  <img src={fund.logo_url} alt={fund.name} className="fund-logo" />
+                  <img src={fund.logo_url} alt={fund.name} className="fund-logo" loading="lazy" decoding="async" />
                 ) : (
                   <div 
                     className="fund-logo" 
@@ -247,6 +260,7 @@ const DonatePage = () => {
               onChange={(e) => handleCustomAmount(e.target.value)}
               min="1"
               step="1"
+              max="100000000"
             />
           </div>
 
@@ -274,6 +288,17 @@ const DonatePage = () => {
             className="btn btn-primary" 
             onClick={handleDonate}
             disabled={amount <= 0 || donating}
+            style={{
+              fontSize: '20px',
+              padding: '20px 32px',
+              minHeight: '64px',
+              background: amount > 0 && !donating 
+                ? 'linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)' 
+                : undefined,
+              boxShadow: amount > 0 && !donating
+                ? '0 8px 24px rgba(16, 185, 129, 0.5), 0 4px 12px rgba(16, 185, 129, 0.3)'
+                : undefined
+            }}
           >
             {donating ? (
               <>
@@ -282,8 +307,8 @@ const DonatePage = () => {
               </>
             ) : (
               <>
-                <Icon name="heart" size={20} />
-                <span className="btn-text-responsive">
+                <Icon name="heart" size={22} color="#ffffff" />
+                <span className="btn-text-responsive" style={{ marginLeft: '8px', fontWeight: '700' }}>
                   Пожертвовать {amount.toLocaleString('ru-RU')} ₽
                 </span>
               </>
