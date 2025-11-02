@@ -44,13 +44,13 @@ sadak/
 |------|--------|------|
 | **requirements.txt** | ✅ | `backend/requirements.txt` |
 | **package.json** | ✅ | `frontend/package.json` |
-| **.env.example** | ⚠️ | Отсутствует (нужно создать) |
+| **.env.example** | ✅ | `backend/env.example`, `frontend/env.example` |
 | **alembic.ini** | ✅ | `backend/alembic.ini` |
 | **vercel.json** | ✅ | `vercel.json`, `frontend/vercel.json` |
 | **tsconfig.json** | ✅ | `frontend/tsconfig.json` |
 | **vite.config.ts** | ✅ | `frontend/vite.config.ts` |
 
-**❌ Недостает:** `.env.example` для backend и frontend
+**✅ Создано:** `.env.example` для backend и frontend (`backend/env.example`, `frontend/env.example`)
 
 ### ✅ Сборочные скрипты и инструкции по деплою
 
@@ -392,9 +392,9 @@ sadak/
 
 ### Критичные пункты:
 
-1. **❌ Создать `.env.example` файлы**
-   - `backend/.env.example`
-   - `frontend/.env.example`
+1. **✅ Создать `.env.example` файлы** - ГОТОВО
+   - ✅ `backend/env.example`
+   - ✅ `frontend/env.example`
 
 2. **❌ Создать первую миграцию Alembic**
    - Сгенерировать миграцию для всех таблиц
