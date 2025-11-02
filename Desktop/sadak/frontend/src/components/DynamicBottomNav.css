@@ -1,0 +1,42 @@
+/* Динамическая навигация - меню меняется в зависимости от страницы */
+
+.dynamic-nav {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Плавная анимация при смене меню */
+.dynamic-nav .tab-item {
+  animation: fadeInNav 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeInNav {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Плавное появление/исчезновение элементов меню */
+.dynamic-nav .tab-item {
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.dynamic-nav .tab-item:hover {
+  transform: translateY(-2px);
+}
+
+/* Улучшенная адаптивность для динамического меню */
+@media (max-width: 375px) {
+  .dynamic-nav .tab-label {
+    font-size: 9px;
+  }
+  
+  .dynamic-nav .tab-icon {
+    margin-bottom: 2px;
+  }
+}
+

@@ -11,11 +11,15 @@ export interface ZakatCalc {
 }
 
 export interface ZakatCalcCreate {
-  cash?: number
+  cash?: number  // Наличные деньги
+  bank_cash?: number  // Деньги на счету в банке
   gold?: { weight: number; rate: number }
   silver?: { weight: number; rate: number }
-  goods?: number
-  debts?: number
+  goods?: number  // Товары и доходы
+  investments?: number  // Инвестиции в имущество
+  other_income?: number  // Другие доходы
+  expenses?: number  // Расходы (вычитаются)
+  debts?: number  // Долги (вычитаются)
 }
 
 export const zakatService = {

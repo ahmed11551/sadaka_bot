@@ -247,7 +247,7 @@ const ZakatPage = () => {
         className="card"
         style={{ 
           marginBottom: '24px',
-          background: 'var(--gradient-primary)',
+          background: 'var(--tg-theme-button-color, var(--primary))',
           color: '#ffffff',
           border: 'none',
           position: 'relative',
@@ -310,7 +310,7 @@ const ZakatPage = () => {
             right: '-50%',
             width: '200%',
             height: '200%',
-            background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+            background: 'transparent',
             animation: 'float 8s ease-in-out infinite',
             pointerEvents: 'none'
           }}
@@ -320,8 +320,8 @@ const ZakatPage = () => {
       {/* Блок с расчетом нисаба и общей суммой */}
       <div className="card" style={{ 
         marginBottom: '24px',
-        background: 'var(--gradient-glass)',
-        backdropFilter: 'blur(20px)',
+        background: 'var(--tg-theme-secondary-bg-color, var(--bg-primary))',
+        backdropFilter: 'none',
         border: '2px solid var(--border-color)'
       }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px', marginBottom: '16px' }}>
@@ -340,7 +340,7 @@ const ZakatPage = () => {
           </div>
           <div style={{ 
             padding: '16px',
-            background: 'var(--gradient-primary)',
+            background: 'var(--tg-theme-button-color, var(--primary))',
             borderRadius: '12px',
             color: '#ffffff'
           }}>
@@ -450,7 +450,7 @@ const ZakatPage = () => {
                 marginLeft: '8px',
                 padding: '4px 10px',
                 fontSize: '12px',
-                background: 'var(--gradient-gold)',
+                background: 'var(--warning)',
                 color: '#ffffff',
                 border: 'none',
                 borderRadius: '8px',
@@ -512,7 +512,7 @@ const ZakatPage = () => {
                 marginLeft: '8px',
                 padding: '4px 10px',
                 fontSize: '12px',
-                background: 'var(--gradient-accent)',
+                background: 'var(--warning)',
                 color: '#ffffff',
                 border: 'none',
                 borderRadius: '8px',
@@ -739,11 +739,11 @@ const ZakatPage = () => {
               <div style={{ 
                 marginBottom: '24px',
                 padding: '24px',
-                background: 'var(--gradient-primary)',
+                background: 'var(--tg-theme-button-color, var(--primary))',
                 borderRadius: '16px',
                 textAlign: 'center',
-                boxShadow: 'var(--shadow-lg), var(--shadow-glow)',
-                border: '2px solid rgba(255, 255, 255, 0.2)'
+                boxShadow: 'none',
+                border: 'none'
               }}>
                 <div style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '8px', fontWeight: '600' }}>
                   Закят к уплате

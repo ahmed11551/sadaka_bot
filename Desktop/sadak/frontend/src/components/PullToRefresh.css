@@ -1,0 +1,26 @@
+.pull-to-refresh-container {
+  position: relative;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.pull-to-refresh-indicator {
+  will-change: transform, opacity;
+}
+
+@keyframes pullRefresh {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(10px) scale(1.1);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+.pull-to-refresh-indicator.refreshing {
+  animation: pullRefresh 1s ease-in-out infinite;
+}
+

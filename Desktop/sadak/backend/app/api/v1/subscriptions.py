@@ -73,3 +73,41 @@ async def cancel_subscription(
     )
     return {"status": "cancelled", "subscription_id": subscription.id}
 
+
+@router.patch("/{subscription_id}", response_model=schemas.Subscription)
+async def update_subscription_status(
+    subscription_id: int,
+    status_data: schemas.SubscriptionStatusUpdate,
+    user = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Обновить статус подписки (пауза/возобновление)
+    
+    Body:
+    {
+        "status": "paused" | "active"
+    }
+    """
+    from app.services import subscription_service
+    from app.models.subscription import SubscriptionStatus
+    
+    if status_data.status == "paused":
+        subscription = subscription_service.pause_subscription(
+            db=db,
+            subscription_id=subscription_id,
+            user_id=user.id
+        )
+    elif status_data.status == "active":
+        subscription = subscription_service.resume_subscription(
+            db=db,
+            subscription_id=subscription_id,
+            user_id=user.id
+        )
+    else:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid status. Use 'paused' or 'active'"
+        )
+    
+    return subscription

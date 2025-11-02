@@ -126,3 +126,58 @@ def cancel_subscription(
     
     return subscription
 
+
+def pause_subscription(
+    db: Session,
+    subscription_id: int,
+    user_id: int
+) -> Subscription:
+    """Приостановить подписку"""
+    subscription = db.query(Subscription).filter(
+        Subscription.id == subscription_id,
+        Subscription.user_id == user_id
+    ).first()
+    
+    if not subscription:
+        raise ValueError("Subscription not found")
+    
+    if subscription.status != SubscriptionStatus.ACTIVE:
+        raise ValueError("Only active subscriptions can be paused")
+    
+    subscription.status = SubscriptionStatus.PAUSED
+    subscription.updated_at = datetime.utcnow()
+    
+    db.commit()
+    db.refresh(subscription)
+    
+    return subscription
+
+
+def resume_subscription(
+    db: Session,
+    subscription_id: int,
+    user_id: int
+) -> Subscription:
+    """Возобновить подписку"""
+    subscription = db.query(Subscription).filter(
+        Subscription.id == subscription_id,
+        Subscription.user_id == user_id
+    ).first()
+    
+    if not subscription:
+        raise ValueError("Subscription not found")
+    
+    if subscription.status != SubscriptionStatus.PAUSED:
+        raise ValueError("Only paused subscriptions can be resumed")
+    
+    # Проверяем, не истекла ли подписка
+    if subscription.expires_at and subscription.expires_at < datetime.utcnow():
+        raise ValueError("Subscription has expired and cannot be resumed")
+    
+    subscription.status = SubscriptionStatus.ACTIVE
+    subscription.updated_at = datetime.utcnow()
+    
+    db.commit()
+    db.refresh(subscription)
+    
+    return subscription

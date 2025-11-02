@@ -198,7 +198,7 @@ const DonatePage = () => {
                   <div 
                     className="fund-logo" 
                     style={{ 
-                      background: 'var(--gradient-primary)', 
+                      background: 'var(--primary)', 
                       display: 'flex', 
                       alignItems: 'center', 
                       justifyContent: 'center',
@@ -289,15 +289,13 @@ const DonatePage = () => {
             onClick={handleDonate}
             disabled={amount <= 0 || donating}
             style={{
-              fontSize: '20px',
-              padding: '20px 32px',
-              minHeight: '64px',
+              fontSize: '18px',
+              padding: '16px 24px',
+              minHeight: '56px',
               background: amount > 0 && !donating 
-                ? 'linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)' 
+                ? 'var(--tg-theme-button-color, var(--primary))' 
                 : undefined,
-              boxShadow: amount > 0 && !donating
-                ? '0 8px 24px rgba(16, 185, 129, 0.5), 0 4px 12px rgba(16, 185, 129, 0.3)'
-                : undefined
+              boxShadow: 'none'
             }}
           >
             {donating ? (

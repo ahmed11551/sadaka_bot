@@ -37,11 +37,11 @@ const HistoryPage = () => {
 
   const getTransactionIconBg = (item: HistoryItem) => {
     if (item.type === 'donation') {
-      return 'linear-gradient(135deg, #41d4a8 0%, #10b981 100%)'
+      return 'var(--success)'
     } else if (item.type === 'subscription') {
-      return 'linear-gradient(135deg, #2d60ff 0%, #1814f3 100%)'
+      return 'var(--primary)'
     }
-    return 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
+    return 'var(--warning)'
   }
 
   const getTransactionTitle = (item: HistoryItem) => {
@@ -87,9 +87,9 @@ const HistoryPage = () => {
           style={{
             textAlign: 'center',
             padding: '48px 24px',
-            borderRadius: '25px',
-            background: '#ffffff',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)',
+            borderRadius: '16px',
+            background: 'var(--tg-theme-secondary-bg-color, var(--bg-primary))',
+            boxShadow: 'none',
           }}
         >
           <Icon name="inbox" size={48} color="#718ebf" />
@@ -105,11 +105,11 @@ const HistoryPage = () => {
             style={{
               marginBottom: '16px',
               padding: '20px',
-              borderRadius: '25px',
-              background: '#ffffff',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)',
-              border: '0.5px solid rgba(0,0,0,0.08)',
-              transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+              borderRadius: '16px',
+              background: 'var(--tg-theme-secondary-bg-color, var(--bg-primary))',
+              boxShadow: 'none',
+              border: 'none',
+              transition: 'background-color var(--transition-base)',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -124,7 +124,7 @@ const HistoryPage = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                  boxShadow: 'none',
                 }}
               >
                 <Icon 

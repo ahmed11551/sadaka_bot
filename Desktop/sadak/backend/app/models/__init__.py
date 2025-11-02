@@ -5,6 +5,7 @@ from .subscription import Subscription
 from .campaign import Campaign
 from .zakat import ZakatCalc
 from .report import Report
+from .partner_application import PartnerApplication
 
 __all__ = [
     "User",
@@ -14,5 +15,6 @@ __all__ = [
     "Campaign",
     "ZakatCalc",
     "Report",
+    "PartnerApplication",
 ]
 

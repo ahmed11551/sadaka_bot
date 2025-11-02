@@ -38,12 +38,28 @@ async def yookassa_webhook(
         if event == "payment.succeeded":
             order_id = payment.get("metadata", {}).get("order_id")
             if order_id:
-                donation_service.update_donation_status(
+                donation = donation_service.update_donation_status(
                     db=db,
                     donation_id=int(order_id),
                     status=DonationStatus.COMPLETED,
                     payment_id=payment.get("id")
                 )
+                # Синхронизация обновленного статуса с e-replika.ru
+                if donation:
+                    from app.api.v1.donations import sync_donation_to_replika
+                    from fastapi import BackgroundTasks
+                    background_tasks = BackgroundTasks()
+                    background_tasks.add_task(sync_donation_to_replika, donation.id)
+                    # Выполняем синхронизацию асинхронно
+                    import asyncio
+                    try:
+                        loop = asyncio.get_event_loop()
+                        if loop.is_running():
+                            asyncio.create_task(sync_donation_to_replika(donation.id))
+                        else:
+                            loop.run_until_complete(sync_donation_to_replika(donation.id))
+                    except Exception as e:
+                        logger.error(f"Error syncing donation status to e-replika: {e}")
         
         return {"status": "ok"}
         
@@ -75,12 +91,24 @@ async def cloudpayments_webhook(
         invoice_id = body.get("InvoiceId")
         
         if transaction_status == "Completed" and invoice_id:
-            donation_service.update_donation_status(
+            donation = donation_service.update_donation_status(
                 db=db,
                 donation_id=int(invoice_id),
                 status=DonationStatus.COMPLETED,
                 payment_id=body.get("TransactionId")
             )
+            # Синхронизация обновленного статуса с e-replika.ru
+            if donation:
+                from app.api.v1.donations import sync_donation_to_replika
+                import asyncio
+                try:
+                    loop = asyncio.get_event_loop()
+                    if loop.is_running():
+                        asyncio.create_task(sync_donation_to_replika(donation.id))
+                    else:
+                        loop.run_until_complete(sync_donation_to_replika(donation.id))
+                except Exception as e:
+                    logger.error(f"Error syncing donation status to e-replika: {e}")
         
         return {"status": "ok"}
         

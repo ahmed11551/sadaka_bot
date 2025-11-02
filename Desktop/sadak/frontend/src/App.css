@@ -98,28 +98,13 @@
   }
 }
 
-/* Основной контейнер */
+/* Основной контейнер в стиле Telegram Wallet */
 .app {
   min-height: 100vh;
   padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
-  background: var(--bg-secondary);
+  background: var(--tg-theme-bg-color, var(--bg-secondary));
   position: relative;
   overflow-x: hidden;
-}
-
-.app::before {
-  content: '';
-  position: fixed;
-  top: -50%;
-  right: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.05) 0%, transparent 70%),
-              radial-gradient(circle at 20% 80%, rgba(245, 158, 11, 0.05) 0%, transparent 50%),
-              radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
-  animation: float 20s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 0;
 }
 
 /* Контейнер для контента */
@@ -135,7 +120,7 @@
   font-size: 32px;
   font-weight: 800;
   margin-bottom: var(--spacing-lg);
-  background: var(--gradient-primary);
+  background: var(--tg-theme-button-color, var(--primary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -202,175 +187,92 @@
   transform: none !important;
 }
 
+/* Кнопки в стиле Telegram Wallet - простые и чистые */
 .btn-primary {
-  background: linear-gradient(135deg, #059669 0%, #047857 100%);
-  color: var(--text-white) !important;
-  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.25), 0 2px 8px rgba(5, 150, 105, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  font-weight: 700;
-}
-
-.btn-primary::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.btn-primary:hover:not(:disabled)::after {
-  left: 100%;
+  background: var(--tg-theme-button-color, var(--primary));
+  color: var(--tg-theme-button-text-color, var(--text-white)) !important;
+  box-shadow: none;
+  border: none;
+  font-weight: 600;
 }
 
 .btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.3), 0 4px 12px rgba(5, 150, 105, 0.2);
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: var(--primary-hover);
+  transform: none;
+  box-shadow: none;
 }
 
 .btn-primary:active:not(:disabled) {
-  transform: translateY(-2px) scale(0.98);
-  box-shadow: var(--shadow-md);
+  background: var(--primary-dark);
+  transform: scale(0.98);
+  box-shadow: none;
 }
 
 .btn-primary:disabled {
-  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
-  box-shadow: var(--shadow-sm);
+  background: rgba(0, 0, 0, 0.12);
+  color: rgba(0, 0, 0, 0.26) !important;
+  opacity: 0.5;
 }
 
-/* Вторичная кнопка с glassmorphism */
+/* Вторичная кнопка в стиле Telegram Wallet */
 .btn-secondary {
-  background: var(--bg-glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: var(--bg-secondary);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   color: var(--text-primary);
-  border: 2px solid var(--border-color);
-  box-shadow: var(--shadow-md);
+  border: none;
+  box-shadow: none;
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: var(--bg-glass-hover);
-  border-color: var(--primary);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  background: var(--bg-tertiary);
+  border-color: transparent;
+  transform: none;
+  box-shadow: none;
 }
 
-/* Интерактивные карточки - как в Telegram Wallet */
+/* Интерактивные карточки в стиле Telegram Wallet */
 .interactive-card {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   position: relative;
   overflow: hidden;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.interactive-card::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(16, 185, 129, 0.15);
-  transform: translate(-50%, -50%);
-  transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease;
-  opacity: 0;
-}
-
-.interactive-card:active::before {
-  width: 300px;
-  height: 300px;
-  opacity: 1;
+  transition: background-color var(--transition-base);
 }
 
 .interactive-card:active {
-  transform: scale(0.95) translateY(0);
+  background: var(--bg-tertiary);
+  transform: scale(0.98);
 }
 
 .interactive-card:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.15), 0 3px 10px rgba(0,0,0,0.1);
+  background: var(--bg-secondary);
+  transform: none;
+  box-shadow: none;
 }
 
-/* Визуальный индикатор клика */
-.interactive-card::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(16, 185, 129, 0.3);
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
-  opacity: 0;
-}
-
-.interactive-card:active::after {
-  width: 200px;
-  height: 200px;
-  opacity: 1;
-}
-
-/* Профессиональные карточки */
+/* Карточки в стиле Telegram Wallet - минималистичные */
 .card {
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 24px;
+  background: var(--tg-theme-secondary-bg-color, var(--bg-primary));
+  border-radius: var(--radius-lg);
+  padding: 16px;
   margin-bottom: var(--spacing-md);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.06);
+  box-shadow: none;
+  border: none;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(0,0,0,0.06);
+  transition: background-color var(--transition-base);
   position: relative;
   overflow: hidden;
   -webkit-tap-highlight-color: transparent;
 }
 
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: var(--gradient-primary);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--transition-base);
-}
-
-.card::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
-  opacity: 0;
-  transition: opacity var(--transition-base);
-  pointer-events: none;
-}
-
 .card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
-  border-color: rgba(16, 185, 129, 0.3);
-}
-
-.card:hover::before {
-  transform: scaleX(1);
+  background: var(--bg-secondary);
 }
 
 .card:active {
-  transform: translateY(-1px) scale(0.98);
+  background: var(--bg-tertiary);
+  transform: scale(0.99);
 }
 
 .card-title {
@@ -390,80 +292,59 @@
   letter-spacing: -0.01em;
 }
 
-/* Кнопки пресетов с золотым акцентом */
+/* Кнопки пресетов в стиле Telegram Wallet */
 .btn-preset {
-  padding: 20px 24px;
-  border: 2px solid var(--border-color);
-  border-radius: var(--radius-xl);
-  background: var(--bg-glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  color: var(--primary);
-  font-size: 18px;
-  font-weight: 700;
+  padding: 16px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--tg-theme-secondary-bg-color, var(--bg-primary));
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  color: var(--tg-theme-text-color, var(--text-primary));
+  font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all var(--transition-base);
+  transition: background-color var(--transition-base);
   flex: 1;
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-md);
-  min-height: 64px;
+  box-shadow: none;
+  min-height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.btn-preset::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--gradient-primary);
-  opacity: 0;
-  transition: opacity var(--transition-base);
-  z-index: 0;
-}
-
 .btn-preset span {
   position: relative;
   z-index: 2;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-weight: 500;
+  letter-spacing: 0;
   color: inherit;
   transition: color var(--transition-base);
 }
 
 .btn-preset.active {
-  background: var(--gradient-primary);
-  color: var(--text-white);
+  background: var(--tg-theme-button-color, var(--primary));
+  color: #ffffff;
   border-color: transparent;
-  box-shadow: var(--shadow-lg), var(--shadow-glow);
-  transform: translateY(-2px) scale(1.02);
-}
-
-.btn-preset.active::before {
-  opacity: 0;
+  box-shadow: none;
+  transform: none;
 }
 
 .btn-preset.active span {
-  color: var(--text-white);
+  color: #ffffff;
 }
 
 .btn-preset:hover:not(.active) {
-  transform: translateY(-3px) scale(1.01);
-  border-color: var(--primary);
-  box-shadow: var(--shadow-lg);
-  background: var(--bg-glass-hover);
-}
-
-.btn-preset:hover:not(.active)::before {
-  opacity: 0.05;
+  background: var(--bg-secondary);
+  transform: none;
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .btn-preset:active {
-  transform: translateY(-1px) scale(0.99);
+  transform: scale(0.98);
 }
 
 /* Бейджи */
@@ -471,21 +352,21 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
-  padding: 8px 16px;
-  border-radius: var(--radius-full);
-  font-size: 13px;
-  font-weight: 700;
-  background: var(--gradient-primary);
-  color: var(--text-white);
-  box-shadow: var(--shadow-sm);
-  letter-spacing: -0.01em;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--tg-theme-button-color, var(--primary));
+  color: #ffffff;
+  box-shadow: none;
+  letter-spacing: 0;
 }
 
 .badge-secondary {
-  background: var(--bg-glass);
-  backdrop-filter: blur(10px);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  backdrop-filter: none;
+  color: var(--tg-theme-text-color, var(--text-primary));
+  border: none;
 }
 
 /* Улучшенные формы с glassmorphism */
@@ -511,39 +392,37 @@
 
 .form-input {
   width: 100%;
-  padding: 18px 24px;
-  border: 2px solid var(--border-color);
-  border-radius: var(--radius-xl);
-  font-size: 18px;
-  background: var(--bg-glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  color: var(--text-primary);
-  transition: all var(--transition-base);
-  box-shadow: var(--shadow-sm);
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  padding: 16px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  background: var(--tg-theme-secondary-bg-color, var(--bg-primary));
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  color: var(--tg-theme-text-color, var(--text-primary));
+  transition: background-color var(--transition-base);
+  box-shadow: none;
+  font-weight: 400;
+  letter-spacing: 0;
 }
 
 .form-input::placeholder {
-  color: var(--text-muted);
+  color: var(--tg-theme-hint-color, var(--text-muted));
   font-weight: 400;
   opacity: 0.6;
 }
 
 .form-input:hover {
-  border-color: var(--primary);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
-  background: var(--bg-glass-hover);
+  background: var(--bg-secondary);
+  transform: none;
+  box-shadow: none;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: var(--shadow-lg), 0 0 0 4px rgba(16, 185, 129, 0.1);
-  background: var(--bg-primary);
-  transform: translateY(-3px) scale(1.01);
+  background: var(--bg-secondary);
+  box-shadow: none;
+  transform: none;
 }
 
 /* Пресеты сумм */
@@ -557,19 +436,19 @@
 /* Progress bars */
 .progress-bar {
   width: 100%;
-  height: 8px;
-  background: var(--bg-tertiary);
+  height: 6px;
+  background: var(--bg-secondary);
   border-radius: var(--radius-full);
   overflow: hidden;
   position: relative;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
 }
 
 .progress-fill {
   height: 100%;
-  background: var(--gradient-primary);
+  background: var(--tg-theme-button-color, var(--primary));
   border-radius: var(--radius-full);
-  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.3s ease;
   position: relative;
   overflow: hidden;
 }
@@ -581,8 +460,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  animation: shimmer 2s infinite;
+  background: transparent;
+  animation: none;
 }
 
 /* Калькулятор закята */
@@ -642,7 +521,7 @@
 }
 
 .feature-card:hover > div:first-child {
-  background: var(--gradient-primary);
+  background: var(--tg-theme-button-color, var(--primary));
   transform: scale(1.1) rotate(5deg);
   box-shadow: var(--shadow-md);
 }

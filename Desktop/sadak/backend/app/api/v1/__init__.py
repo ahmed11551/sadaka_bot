@@ -2,7 +2,7 @@
 API v1 роутеры
 """
 from fastapi import APIRouter
-from app.api.v1 import funds, donations, subscriptions, campaigns, zakat, history, webhooks, admin, statistics
+from app.api.v1 import funds, donations, subscriptions, campaigns, zakat, history, webhooks, admin, statistics, partners
 
 api_router = APIRouter()
 
@@ -15,4 +15,5 @@ api_router.include_router(history.router, prefix="/me", tags=["history"])
 api_router.include_router(webhooks.router, prefix="/payments/webhook", tags=["webhooks"])
 api_router.include_router(admin.router, tags=["admin"])
 api_router.include_router(statistics.router, tags=["statistics"])
+api_router.include_router(partners.router, prefix="/partners", tags=["partners"])
 

@@ -42,3 +42,7 @@ class Subscription(SubscriptionBase):
     class Config:
         from_attributes = True
 
+
+class SubscriptionStatusUpdate(BaseModel):
+    """Схема для обновления статуса подписки"""
+    status: str  # "paused" | "active"

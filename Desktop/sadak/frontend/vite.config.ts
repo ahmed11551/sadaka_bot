@@ -15,9 +15,18 @@ export default defineConfig({
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'lucide-icons': ['lucide-react'],
         }
       }
-    }
+    },
+    // Минификация и оптимизация
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true, // Удаляет console.log в production
+        drop_debugger: true,
+      },
+    },
   },
   // Настройки для Vercel
   base: '/',

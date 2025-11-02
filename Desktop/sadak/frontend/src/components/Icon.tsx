@@ -37,7 +37,10 @@ import {
   Award,
   Moon,
   Sun,
-  Sparkles
+  Sparkles,
+  CreditCard,
+  Inbox,
+  Repeat
 } from 'lucide-react'
 import './Icon.css'
 
@@ -82,6 +85,9 @@ export type IconName =
   | 'moon'
   | 'sun'
   | 'sparkles'
+  | 'creditCard'
+  | 'inbox'
+  | 'repeat'
 
 interface IconProps {
   name: IconName
@@ -132,6 +138,9 @@ const iconMap: Record<IconName, React.ComponentType<any>> = {
   moon: Moon,
   sun: Sun,
   sparkles: Sparkles,
+  creditCard: CreditCard,
+  inbox: Inbox,
+  repeat: Repeat,
 }
 
 const Icon = ({ name, size = 24, color, className = '', strokeWidth = 2 }: IconProps) => {

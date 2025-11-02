@@ -258,8 +258,8 @@ const SubscriptionPage = () => {
             <div style={{
               padding: '16px',
               borderRadius: '12px',
-              background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
-              border: '1px solid rgba(102, 126, 234, 0.2)',
+              background: 'var(--bg-secondary)',
+              border: '1px solid var(--border-color)',
               textAlign: 'center'
             }}>
               <div style={{ fontSize: '12px', color: 'var(--tg-theme-hint-color)', marginBottom: '4px' }}>

@@ -181,7 +181,7 @@ const CampaignDetailPage = () => {
 
         <div style={{ 
           padding: '20px', 
-          background: 'var(--gradient-primary)', 
+          background: 'var(--tg-theme-button-color, var(--primary))', 
           borderRadius: '16px',
           color: '#ffffff',
           marginBottom: '20px'
@@ -354,7 +354,7 @@ const CampaignDetailPage = () => {
       {(campaign.status === 'completed' || campaign.status === 'expired') && (
         <div className="card" style={{ marginBottom: '24px' }}>
           <h3 style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Icon name="file-text" size={20} />
+            <Icon name="fileText" size={20} />
             Отчет о завершении кампании
           </h3>
           {loadingReport ? (
@@ -421,7 +421,7 @@ const CampaignDetailPage = () => {
                       fontWeight: '600',
                     }}
                   >
-                    <Icon name="external-link" size={16} />
+                    <Icon name="externalLink" size={16} />
                     Открыть отчёт
                   </a>
                 </div>
@@ -447,7 +447,7 @@ const CampaignDetailPage = () => {
                           textDecoration: 'none',
                         }}
                       >
-                        <Icon name="file" size={16} />
+                        <Icon name="fileText" size={16} />
                         Документ {index + 1}
                       </a>
                     ))}

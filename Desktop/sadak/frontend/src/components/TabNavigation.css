@@ -4,14 +4,20 @@
   left: 0;
   right: 0;
   display: flex;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(226, 232, 240, 0.8);
-  padding: 12px 4px 8px;
+  background: var(--tg-theme-secondary-bg-color, var(--bg-primary));
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-top: 0.5px solid var(--border-color);
+  padding: 6px 8px;
+  padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
   overflow-x: auto;
   z-index: 1000;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+  box-shadow: none;
+  justify-content: space-around;
+  align-items: center;
+  gap: 0;
+  min-height: 60px;
+  height: auto;
 }
 
 .tab-item {
@@ -20,40 +26,45 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 8px 4px;
+  padding: 4px 2px;
   text-decoration: none;
-  color: var(--text-muted);
-  min-width: 60px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--tg-theme-hint-color, var(--text-muted));
+  min-width: 64px;
+  max-width: 100px;
+  transition: color var(--transition-base);
   position: relative;
-  border-radius: 12px;
-  margin: 0 2px;
+  border-radius: 10px;
+  margin: 0;
+  background: transparent;
 }
 
-.tab-item::before {
+/* Активная точка-индикатор в стиле Telegram Wallet */
+.tab-item::after {
   content: '';
   position: absolute;
-  top: 0;
+  bottom: 4px;
   left: 50%;
-  transform: translateX(-50%) scaleX(0);
-  width: 40px;
-  height: 3px;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-  border-radius: 0 0 4px 4px;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(-50%) scale(0);
+  width: 4px;
+  height: 4px;
+  background: var(--tg-theme-button-color, var(--primary));
+  border-radius: 50%;
+  transition: transform var(--transition-base);
 }
 
 .tab-item:hover {
-  background: rgba(36, 129, 204, 0.05);
-  transform: translateY(-2px);
+  background: var(--bg-secondary);
 }
 
 .tab-item.active {
-  color: var(--primary);
+  color: var(--tg-theme-button-color, var(--primary));
+  background: transparent;
 }
 
-.tab-item.active::before {
-  transform: translateX(-50%) scaleX(1);
+.tab-item.active::after {
+  transform: translateX(-50%) scale(1);
+  background: var(--tg-theme-button-color, var(--primary));
+  box-shadow: none;
 }
 
 .tab-icon {
@@ -61,27 +72,36 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 4px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 24px;
+  height: 24px;
 }
 
 .tab-item.active .tab-icon {
-  transform: scale(1.15);
+  transform: none;
+}
+
+.tab-item.active .tab-icon svg {
+  filter: none;
 }
 
 .tab-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  transition: all 0.3s ease;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 100%;
   text-align: center;
+  line-height: 1.2;
+  margin-top: 0;
 }
 
 .tab-item.active .tab-label {
-  font-weight: 700;
+  font-weight: 500;
+  color: var(--tg-theme-button-color, var(--primary));
 }
 
 /* Адаптивность для маленьких экранов */
@@ -95,7 +115,7 @@
   }
   
   .tab-item {
-    padding: 6px 2px;
+    padding: 0;
     min-width: 55px;
   }
 }
@@ -106,7 +126,7 @@
   }
   
   .tab-item {
-    padding: 6px 1px;
+    padding: 0;
     min-width: 50px;
   }
   
@@ -115,13 +135,22 @@
   }
 }
 
-/* Темная тема */
+/* Темная тема - используем нативные цвета Telegram */
 [data-theme="dark"] .tab-navigation {
-  background: rgba(26, 32, 44, 0.95);
-  border-top-color: rgba(74, 85, 104, 0.5);
+  background: var(--tg-theme-secondary-bg-color, var(--bg-primary));
+  border-top-color: var(--border-color);
+}
+
+[data-theme="dark"] .tab-item {
+  color: var(--tg-theme-hint-color, var(--text-muted));
 }
 
 [data-theme="dark"] .tab-item:hover {
-  background: rgba(36, 129, 204, 0.1);
+  background: var(--bg-secondary);
+}
+
+[data-theme="dark"] .tab-item.active {
+  background: transparent;
+  color: var(--tg-theme-button-color, var(--primary));
 }
 

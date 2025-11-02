@@ -67,9 +67,47 @@ def get_current_user(
     return web_user
 
 
+async def sync_donation_to_replika(donation_id: int):
+    """Фоновая задача для синхронизации пожертвования с e-replika"""
+    from sqlalchemy.orm import Session
+    from app.core.database import SessionLocal
+    from app.services.e_replika_service import e_replika_service
+    
+    db: Session = SessionLocal()
+    try:
+        from app.models import Donation
+        donation = db.query(Donation).filter(Donation.id == donation_id).first()
+        if donation:
+            donation_data = {
+                "id": donation.id,
+                "user_id": donation.user_id,
+                "fund_id": donation.fund_id,
+                "campaign_id": donation.campaign_id,
+                "amount": float(donation.amount_value),
+                "currency": donation.currency,
+                "status": donation.status.value,
+                "donation_type": donation.donation_type,
+                "payment_id": donation.payment_id,
+                "payment_url": donation.payment_url,
+                "provider": donation.provider.value if donation.provider else None,
+                "created_at": donation.created_at.isoformat() if donation.created_at else None,
+            }
+            await e_replika_service.sync_donation(donation_data)
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.info(f"Successfully synced donation {donation_id} to e-replika")
+    except Exception as e:
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error syncing donation {donation_id} to e-replika: {e}")
+    finally:
+        db.close()
+
+
 @router.post("/init", response_model=schemas.Donation)
 async def init_donation(
     donation_data: schemas.DonationInit,
+    background_tasks: BackgroundTasks,
     user = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -83,6 +121,10 @@ async def init_donation(
         donation_data=donation_data,
         return_url=donation_data.return_url
     )
+    
+    # Синхронизация с e-replika.ru в фоне
+    background_tasks.add_task(sync_donation_to_replika, donation.id)
+    
     return donation
 
 

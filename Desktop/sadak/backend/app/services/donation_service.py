@@ -8,6 +8,9 @@ from app.schemas.donation import DonationInit
 from app.services.payment import payment_service
 from datetime import datetime
 from app.models.donation import DonationStatus
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def get_or_create_user(
@@ -19,6 +22,7 @@ def get_or_create_user(
 ) -> User:
     """Получить или создать пользователя"""
     user = db.query(User).filter(User.tg_id == tg_id).first()
+    is_new = False
     if not user:
         user = User(
             tg_id=tg_id,
@@ -29,6 +33,10 @@ def get_or_create_user(
         db.add(user)
         db.commit()
         db.refresh(user)
+        is_new = True
+    
+    # Синхронизация нового пользователя с e-replika.ru будет вызвана из API эндпоинта через BackgroundTasks
+    
     return user
 
 
@@ -71,6 +79,9 @@ def init_donation(
     
     db.commit()
     db.refresh(donation)
+    
+    # Синхронизация с e-replika.ru будет вызвана из API эндпоинта через BackgroundTasks
+    # Это позволяет не блокировать ответ и корректно обрабатывать async
     
     return donation
 

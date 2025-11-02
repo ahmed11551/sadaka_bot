@@ -23,17 +23,17 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
-  line-height: 1.65;
+  background-color: var(--tg-theme-bg-color, var(--bg-secondary));
+  color: var(--tg-theme-text-color, var(--text-primary));
+  line-height: 1.5;
   font-size: 16px;
   font-weight: 400;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
 }
 
 #root {
   min-height: 100vh;
-  background-color: var(--bg-secondary);
+  background-color: var(--tg-theme-bg-color, var(--bg-secondary));
 }
 
 /* Профессиональная типографика */

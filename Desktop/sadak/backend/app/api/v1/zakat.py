@@ -1,7 +1,7 @@
 """
 API роутер для закята
 """
-from fastapi import APIRouter, Depends, HTTPException, Header
+from fastapi import APIRouter, Depends, HTTPException, Header, Query
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.telegram import get_user_from_init_data
@@ -67,3 +67,19 @@ async def pay_zakat(
     )
     return donation
 
+
+@router.get("/history", response_model=list[schemas.ZakatCalc])
+async def get_zakat_history(
+    limit: int = Query(50, ge=1, le=100, description="Максимальное количество записей"),
+    user = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Получить историю расчётов закята пользователя
+    """
+    calculations = zakat_service.get_zakat_history(
+        db=db,
+        user_id=user.id,
+        limit=limit
+    )
+    return calculations

@@ -50,6 +50,10 @@ const CreateCampaignModal = ({ isOpen, onClose, onSuccess }: CreateCampaignModal
     }
     if (!formData.goal_amount || formData.goal_amount <= 0) {
       newErrors.goal_amount = 'Укажите сумму цели'
+    } else if (formData.goal_amount < 100) {
+      newErrors.goal_amount = 'Минимальная сумма цели: 100 ₽'
+    } else if (formData.goal_amount > 100000000) {
+      newErrors.goal_amount = 'Максимальная сумма цели: 100,000,000 ₽'
     }
     if (!formData.fund_id || formData.fund_id <= 0) {
       newErrors.fund_id = 'Выберите фонд-получатель'
@@ -154,9 +158,15 @@ const CreateCampaignModal = ({ isOpen, onClose, onSuccess }: CreateCampaignModal
                 className={`form-input ${errors.goal_amount ? 'error' : ''}`}
                 placeholder="10000"
                 value={formData.goal_amount || ''}
-                onChange={(e) => setFormData({ ...formData, goal_amount: parseFloat(e.target.value) || 0 })}
+                onChange={(e) => {
+                  const value = parseFloat(e.target.value) || 0
+                  if (value >= 0 && value <= 100000000) {
+                    setFormData({ ...formData, goal_amount: value })
+                  }
+                }}
                 min="100"
                 step="100"
+                max="100000000"
               />
               {errors.goal_amount && <span className="error-message">{errors.goal_amount}</span>}
             </div>
@@ -170,8 +180,14 @@ const CreateCampaignModal = ({ isOpen, onClose, onSuccess }: CreateCampaignModal
                 className={`form-input ${errors.fund_id ? 'error' : ''}`}
                 placeholder="ID фонда"
                 value={formData.fund_id || ''}
-                onChange={(e) => setFormData({ ...formData, fund_id: parseInt(e.target.value) || 0 })}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value) || 0
+                  if (value >= 0 && value <= 999999) {
+                    setFormData({ ...formData, fund_id: value })
+                  }
+                }}
                 min="1"
+                max="999999"
               />
               {errors.fund_id && <span className="error-message">{errors.fund_id}</span>}
               <small className="form-hint">ID фонда из раздела "Фонды-партнёры"</small>

@@ -146,11 +146,9 @@ const SupportPage = () => {
             padding: '20px 32px',
             minHeight: '64px',
             background: amount > 0 && !donating 
-              ? 'linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)' 
+              ? 'var(--tg-theme-button-color, var(--primary))' 
               : undefined,
-            boxShadow: amount > 0 && !donating
-              ? '0 8px 24px rgba(16, 185, 129, 0.5), 0 4px 12px rgba(16, 185, 129, 0.3)'
-              : undefined
+            boxShadow: 'none'
           }}
         >
           {donating ? (
