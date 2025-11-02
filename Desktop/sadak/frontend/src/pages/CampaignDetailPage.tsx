@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { campaignsService, Campaign } from '../services/campaignsService'
+import { campaignsService, Campaign, CampaignDonation, CampaignReport } from '../services/campaignsService'
 import LoadingSpinner from '../components/LoadingSpinner'
 import Skeleton from '../components/Skeleton'
 import ShareButton from '../components/ShareButton'
@@ -16,6 +16,10 @@ const CampaignDetailPage = () => {
   const [donating, setDonating] = useState(false)
   const [donationAmount, setDonationAmount] = useState<string>('')
   const [showDonationForm, setShowDonationForm] = useState(false)
+  const [campaignDonations, setCampaignDonations] = useState<CampaignDonation[]>([])
+  const [loadingDonations, setLoadingDonations] = useState(false)
+  const [campaignReport, setCampaignReport] = useState<CampaignReport | null>(null)
+  const [loadingReport, setLoadingReport] = useState(false)
   const { success, error, warning } = useToast()
 
   useEffect(() => {
@@ -23,6 +27,18 @@ const CampaignDetailPage = () => {
       loadCampaign()
     }
   }, [id])
+
+  useEffect(() => {
+    if (campaign && campaign.status === 'active') {
+      loadDonations()
+    }
+  }, [campaign])
+
+  useEffect(() => {
+    if (campaign && (campaign.status === 'completed' || campaign.status === 'expired')) {
+      loadReport()
+    }
+  }, [campaign])
 
   const loadCampaign = async () => {
     try {
@@ -37,6 +53,34 @@ const CampaignDetailPage = () => {
       }, 2000)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const loadDonations = async () => {
+    if (!id) return
+    setLoadingDonations(true)
+    try {
+      const donations = await campaignsService.getCampaignDonations(parseInt(id), 10)
+      setCampaignDonations(donations)
+    } catch (err: any) {
+      console.error('Error loading donations:', err)
+      // Не показываем ошибку, просто не загружаем историю
+    } finally {
+      setLoadingDonations(false)
+    }
+  }
+
+  const loadReport = async () => {
+    if (!id) return
+    setLoadingReport(true)
+    try {
+      const report = await campaignsService.getCampaignReport(parseInt(id))
+      setCampaignReport(report)
+    } catch (err: any) {
+      console.error('Error loading report:', err)
+      // Не показываем ошибку, если отчёт недоступен
+    } finally {
+      setLoadingReport(false)
     }
   }
 
@@ -255,13 +299,167 @@ const CampaignDetailPage = () => {
         )}
       </div>
 
+      {/* История пожертвований (для активных кампаний) */}
+      {campaign.status === 'active' && campaignDonations.length > 0 && (
+        <div className="card" style={{ marginBottom: '24px' }}>
+          <h3 style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Icon name="history" size={20} />
+            История пожертвований
+          </h3>
+          {loadingDonations ? (
+            <div style={{ textAlign: 'center', padding: '20px' }}>
+              <LoadingSpinner size="sm" />
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {campaignDonations.slice(0, 10).map((donation) => (
+                <div
+                  key={donation.id}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '12px',
+                    background: 'var(--bg-secondary)',
+                    borderRadius: '8px',
+                  }}
+                >
+                  <div>
+                    <div style={{ fontWeight: '600', marginBottom: '4px' }}>
+                      {parseFloat(donation.amount_value).toLocaleString('ru-RU')} {donation.currency}
+                    </div>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                      {donation.completed_at
+                        ? new Date(donation.completed_at).toLocaleDateString('ru-RU', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })
+                        : 'В обработке'}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="badge badge-success">Завершено</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Отчеты (если кампания завершена) */}
-      {campaign.status === 'completed' && (
-        <div className="card">
-          <h3 style={{ marginBottom: '12px' }}>📊 Отчет о сборе</h3>
-          <p style={{ color: 'var(--text-muted)' }}>
-            Кампания успешно завершена. Отчет о расходовании средств будет опубликован фондом-получателем.
-          </p>
+      {(campaign.status === 'completed' || campaign.status === 'expired') && (
+        <div className="card" style={{ marginBottom: '24px' }}>
+          <h3 style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Icon name="file-text" size={20} />
+            Отчет о завершении кампании
+          </h3>
+          {loadingReport ? (
+            <div style={{ textAlign: 'center', padding: '20px' }}>
+              <LoadingSpinner size="sm" />
+            </div>
+          ) : campaignReport ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ padding: '16px', background: 'var(--bg-secondary)', borderRadius: '12px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px', marginBottom: '16px' }}>
+                  <div>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                      Собрано средств
+                    </div>
+                    <div style={{ fontSize: '20px', fontWeight: '700', color: 'var(--primary)' }}>
+                      {parseFloat(campaignReport.total_collected).toLocaleString('ru-RU')} ₽
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                      Участников
+                    </div>
+                    <div style={{ fontSize: '20px', fontWeight: '700' }}>
+                      {campaignReport.total_participants}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ padding: '16px', background: 'var(--bg-secondary)', borderRadius: '12px' }}>
+                <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '8px' }}>
+                  Фонд-получатель
+                </div>
+                <div style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px' }}>
+                  {campaignReport.fund_name}
+                </div>
+                {campaignReport.transferred_at && (
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                    Средства перечислены:{' '}
+                    {new Date(campaignReport.transferred_at).toLocaleDateString('ru-RU', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {campaignReport.fund_report_url && (
+                <div style={{ padding: '16px', background: 'var(--bg-secondary)', borderRadius: '12px' }}>
+                  <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '8px' }}>
+                    Отчёт фонда
+                  </div>
+                  <a
+                    href={campaignReport.fund_report_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      color: 'var(--primary)',
+                      textDecoration: 'none',
+                      fontWeight: '600',
+                    }}
+                  >
+                    <Icon name="external-link" size={16} />
+                    Открыть отчёт
+                  </a>
+                </div>
+              )}
+
+              {campaignReport.report_documents && campaignReport.report_documents.length > 0 && (
+                <div style={{ padding: '16px', background: 'var(--bg-secondary)', borderRadius: '12px' }}>
+                  <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '8px' }}>
+                    Документы
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {campaignReport.report_documents.map((doc, index) => (
+                      <a
+                        key={index}
+                        href={doc}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          color: 'var(--primary)',
+                          textDecoration: 'none',
+                        }}
+                      >
+                        <Icon name="file" size={16} />
+                        Документ {index + 1}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <p style={{ color: 'var(--text-muted)' }}>
+              Отчёт пока не доступен. Фонд-получатель опубликует его в ближайшее время.
+            </p>
+          )}
         </div>
       )}
     </div>

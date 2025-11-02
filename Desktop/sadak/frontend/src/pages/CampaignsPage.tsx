@@ -18,15 +18,28 @@ const CampaignsPage = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
   const [selectedStatus, setSelectedStatus] = useState('active')
+  const [selectedSort, setSelectedSort] = useState<string>('newest')
+  const [selectedCountry, setSelectedCountry] = useState<string>('')
   
   const debouncedSearch = useDebounce(searchQuery, 300)
   
   // Получаем уникальные категории
   const categories = Array.from(new Set(campaigns.map(c => c.category).filter((cat): cat is string => Boolean(cat))))
+  
+  // Список стран (можно расширить)
+  const countries = [
+    { value: 'RU', label: '🇷🇺 Россия' },
+    { value: 'KZ', label: '🇰🇿 Казахстан' },
+    { value: 'UZ', label: '🇺🇿 Узбекистан' },
+    { value: 'KG', label: '🇰🇬 Кыргызстан' },
+    { value: 'TJ', label: '🇹🇯 Таджикистан' },
+    { value: 'AZ', label: '🇦🇿 Азербайджан' },
+    { value: 'TR', label: '🇹🇷 Турция' },
+  ]
 
   useEffect(() => {
     loadCampaigns()
-  }, [])
+  }, [selectedStatus, selectedSort, selectedCountry])
 
   useEffect(() => {
     let filtered = campaigns
@@ -54,7 +67,12 @@ const CampaignsPage = () => {
 
   const loadCampaigns = async () => {
     try {
-      const data = await campaignsService.getCampaigns({ status: selectedStatus })
+      setLoading(true)
+      const data = await campaignsService.getCampaigns({ 
+        status: selectedStatus,
+        sort: selectedSort,
+        country_code: selectedCountry || undefined
+      })
       setCampaigns(data)
       setFilteredCampaigns(data)
     } catch (error) {
@@ -119,15 +137,29 @@ const CampaignsPage = () => {
           style={{ marginBottom: '12px' }}
         />
         
-        {categories.length > 0 && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px' }}>
           <FilterBar
             filters={[
               {
+                label: 'Страна',
+                options: [
+                  { value: '', label: 'Все страны' },
+                  ...countries,
+                ],
+                value: selectedCountry,
+                onChange: (value) => {
+                  setSelectedCountry(value)
+                },
+              },
+              ...(categories.length > 0 ? [{
                 label: 'Категория',
-                options: categories.map(cat => ({ value: cat, label: cat })),
+                options: [
+                  { value: '', label: 'Все категории' },
+                  ...categories.map(cat => ({ value: cat, label: cat })),
+                ],
                 value: selectedCategory,
                 onChange: setSelectedCategory,
-              },
+              }] : []),
               {
                 label: 'Статус',
                 options: [
@@ -138,12 +170,39 @@ const CampaignsPage = () => {
                 value: selectedStatus,
                 onChange: (value) => {
                   setSelectedStatus(value)
-                  loadCampaigns()
                 },
               },
             ]}
           />
-        )}
+          
+          {/* Сортировка */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            <label style={{ fontSize: '14px', color: 'var(--text-muted)', fontWeight: '500' }}>
+              Сортировка:
+            </label>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              {[
+                { value: 'newest', label: '🆕 Новые' },
+                { value: 'popularity', label: '⭐ Популярные' },
+                { value: 'progress', label: '📈 По прогрессу' },
+              ].map((option) => (
+                <button
+                  key={option.value}
+                  className={`btn ${selectedSort === option.value ? 'btn-primary' : 'btn-secondary'}`}
+                  onClick={() => setSelectedSort(option.value)}
+                  style={{ 
+                    padding: '8px 16px', 
+                    fontSize: '14px',
+                    borderRadius: '8px',
+                    border: selectedSort === option.value ? '2px solid var(--primary)' : '1px solid var(--border)',
+                  }}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
 
       {filteredCampaigns.length === 0 && campaigns.length > 0 ? (

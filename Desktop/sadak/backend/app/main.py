@@ -63,6 +63,36 @@ async def startup_event():
     logger.info(f"🚀 Садака-Пасс API запущен (Environment: {settings.ENVIRONMENT})")
     if settings.ENVIRONMENT == "production":
         logger.info("✅ Продакшен режим активен")
+    
+    # Настройка периодических задач
+    from apscheduler.schedulers.asyncio import AsyncIOScheduler
+    from app.core.tasks import check_expired_campaigns_task
+    
+    scheduler = AsyncIOScheduler()
+    
+    # Проверка истечённых кампаний каждый час
+    scheduler.add_job(
+        check_expired_campaigns_task,
+        'interval',
+        hours=1,
+        id='check_expired_campaigns',
+        replace_existing=True
+    )
+    
+    scheduler.start()
+    logger.info("✅ Планировщик задач запущен (проверка истекших кампаний каждый час)")
+    
+    # Запускаем проверку сразу при старте
+    try:
+        await check_expired_campaigns_task()
+    except Exception as e:
+        logger.error(f"Ошибка при первоначальной проверке кампаний: {e}")
+
+
+# Shutdown event
+@app.on_event("shutdown")
+async def shutdown_event():
+    logger.info("🛑 Выключение Садака-Пасс API")
 
 
 @app.get("/")

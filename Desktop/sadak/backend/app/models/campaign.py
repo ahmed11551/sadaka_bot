@@ -32,6 +32,9 @@ class Campaign(Base):
     collected_amount = Column(Numeric(10, 2), default=0)
     currency = Column(String(3), default="RUB")
     
+    # Страна (берётся из fund, но можно указать напрямую)
+    country_code = Column(String(2))  # ISO 3166-1 alpha-2
+    
     # Медиа
     banner_url = Column(String(512))
     

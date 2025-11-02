@@ -31,11 +31,32 @@ export interface CampaignCreate {
   end_date: string
 }
 
+export interface CampaignDonation {
+  id: number
+  user_id: number
+  amount_value: string
+  currency: string
+  status: string
+  donation_type: string
+  completed_at?: string
+}
+
+export interface CampaignReport {
+  campaign_id: number
+  total_collected: string
+  total_participants: number
+  fund_name: string
+  fund_report_url?: string
+  transferred_at?: string
+  report_documents?: string[]
+}
+
 export const campaignsService = {
   getCampaigns: async (params?: {
     country_code?: string
     category?: string
     status?: string
+    sort?: string
   }) => {
     const cacheKey = `campaigns_${JSON.stringify(params || {})}`
     
@@ -69,6 +90,19 @@ export const campaignsService = {
       currency: 'RUB',
       donation_type: 'campaign',
     })
+    return response.data
+  },
+
+  getCampaignDonations: async (campaignId: number, limit: number = 10) => {
+    const response = await apiClient.get<CampaignDonation[]>(
+      `/campaigns/${campaignId}/donations`,
+      { params: { limit } }
+    )
+    return response.data
+  },
+
+  getCampaignReport: async (campaignId: number) => {
+    const response = await apiClient.get<CampaignReport>(`/campaigns/${campaignId}/report`)
     return response.data
   },
 }
